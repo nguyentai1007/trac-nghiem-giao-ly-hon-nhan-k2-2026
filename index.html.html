@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Trắc nghiệm Giáo lý</title>
+  <style>
+/* ===== Design tokens ===== */
+:root {
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --surface-2: #f1f3f9;
+  --border: #dfe3ee;
+  --text: #1b2033;
+  --muted: #5a627a;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-soft: #eceafe;
+  --on-primary: #ffffff;
+  --blue: #2563eb;
+  --blue-soft: #dbe7ff;
+  --amber: #f59e0b;
+  --amber-soft: #fff1cc;
+  --green: #16a34a;
+  --green-soft: #dcf5e4;
+  --red: #dc2626;
+  --red-soft: #fde2e2;
+  --neutral-soft: #e8ebf3;
+  --ring: rgba(79, 70, 229, .45);
+  --shadow: 0 1px 2px rgba(20, 24, 50, .06), 0 6px 20px rgba(20, 24, 50, .06);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --t: .18s ease;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0e1220;
+  --surface: #171c2e;
+  --surface-2: #1f2540;
+  --border: #2c3355;
+  --text: #e8ebf8;
+  --muted: #a3abc7;
+  --primary: #8b85ff;
+  --primary-hover: #a29dff;
+  --primary-soft: #26285a;
+  --on-primary: #10132a;
+  --blue: #6ea2ff;
+  --blue-soft: #1d3363;
+  --amber: #fbbf24;
+  --amber-soft: #4a3a0c;
+  --green: #4ade80;
+  --green-soft: #12391f;
+  --red: #f87171;
+  --red-soft: #4a1b1b;
+  --neutral-soft: #262c49;
+  --ring: rgba(139, 133, 255, .55);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body.no-scroll { overflow: hidden; }
+h1, h2, h3, p, dl, dd, ul, fieldset { margin: 0; padding: 0; }
+ul { list-style: none; }
+fieldset { border: 0; min-width: 0; }
+legend { padding: 0; font-weight: 600; margin-bottom: 8px; }
+code { background: var(--surface-2); padding: 1px 6px; border-radius: 6px; font-size: .9em; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 8px; }
+[tabindex="-1"]:focus { outline: none; }
+[hidden] { display: none !important; }
+
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.skip-link { position: absolute; left: -999px; top: 8px; background: var(--primary); color: var(--on-primary); padding: 8px 14px; border-radius: 8px; z-index: 100; }
+.skip-link:focus { left: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.muted { color: var(--muted); }
+.small { font-size: .875rem; }
+.center { text-align: center; }
+.h1 { font-size: clamp(1.6rem, 3.5vw, 2.1rem); line-height: 1.2; font-weight: 750; letter-spacing: -.01em; }
+.h2 { font-size: 1.35rem; font-weight: 700; line-height: 1.3; }
+.h3 { font-size: 1.05rem; font-weight: 700; }
+.eyebrow { text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+
+svg.icon { width: 1.15em; height: 1.15em; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ===== Header ===== */
+.app-header { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; cursor: pointer; font-weight: 700; font-size: 1.05rem; padding: 4px 6px; border-radius: 10px; }
+.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--primary); color: var(--on-primary); }
+main#app { padding-top: 24px; padding-bottom: 48px; }
+
+/* ===== Cards, buttons, inputs ===== */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 18px; border-radius: 12px;
+  border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-weight: 600;
+  transition: background var(--t), border-color var(--t), transform var(--t), box-shadow var(--t);
+}
+.btn:hover:not(:disabled) { background: var(--surface-2); border-color: var(--primary); }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.btn.primary:hover:not(:disabled) { background: var(--primary-hover); border-color: var(--primary-hover); }
+.btn.ghost { background: transparent; }
+.btn.sm { min-height: 36px; padding: 0 12px; font-size: .9rem; }
+.btn.lg { min-height: 52px; font-size: 1.05rem; width: 100%; }
+.btn.block { width: 100%; }
+.btn[aria-pressed="true"] { background: var(--amber-soft); border-color: var(--amber); }
+.icon-btn { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; transition: background var(--t); }
+.icon-btn:hover { background: var(--surface-2); }
+.input { width: 100%; min-height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; }
+.input.narrow { max-width: 140px; }
+.input:focus-visible { outline-offset: 0; border-color: var(--primary); }
+.row { display: flex; gap: 12px; align-items: center; }
+.row.wrap { flex-wrap: wrap; }
+.row.between { justify-content: space-between; }
+.row.end { justify-content: flex-end; }
+.center-row { justify-content: center; margin: 16px 0; }
+.badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: .8rem; }
+.empty { text-align: center; color: var(--muted); padding: 24px 12px; }
+.detail-list { text-align: left; margin: 12px 0; padding-left: 18px; list-style: disc; color: var(--muted); font-size: .9rem; }
+.detail-list li { margin: 3px 0; }
+
+/* ===== Loading / error ===== */
+.skeleton { background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite linear; border-radius: 10px; }
+.sk-title { height: 28px; width: 55%; margin-bottom: 18px; }
+.sk-line { height: 14px; margin-bottom: 10px; }
+.sk-line.short { width: 70%; }
+.sk-block { height: 140px; margin-top: 18px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.state-card { text-align: center; max-width: 620px; margin: 40px auto; }
+.state-icon { width: 56px; height: 56px; margin: 0 auto 12px; display: grid; place-items: center; border-radius: 50%; }
+.state-icon svg { width: 28px; height: 28px; }
+.state-icon.danger { background: var(--red-soft); color: var(--red); }
+
+/* ===== Welcome ===== */
+.welcome-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.hero > * + * { margin-top: 12px; }
+.setup { display: grid; gap: 20px; margin-top: 20px !important; }
+.field { display: grid; gap: 6px; }
+.choice-grid { display: grid; gap: 10px; }
+.choice-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.choice-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.choice { position: relative; display: block; cursor: pointer; }
+.choice input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.choice-body { display: flex; flex-direction: column; gap: 2px; height: 100%; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); transition: border-color var(--t), background var(--t); }
+.choice:hover .choice-body { border-color: var(--primary); }
+.choice input:checked + .choice-body { border-color: var(--primary); background: var(--primary-soft); }
+.choice input:focus-visible + .choice-body { outline: 3px solid var(--ring); outline-offset: 2px; }
+.choice-grid.four .choice-body { align-items: center; justify-content: center; text-align: center; font-weight: 700; min-height: 48px; }
+.check { display: flex; align-items: center; gap: 10px; min-height: 32px; cursor: pointer; }
+.check input { width: 20px; height: 20px; accent-color: var(--primary); }
+.notice { border: 1px solid var(--primary); background: var(--primary-soft); border-radius: 12px; padding: 14px 16px; }
+.notice p { margin-bottom: 10px; }
+.warnings { margin-top: 16px; font-size: .9rem; color: var(--muted); }
+.warnings summary { cursor: pointer; font-weight: 600; color: var(--amber); }
+.history-list { display: grid; gap: 10px; margin-top: 12px; }
+.history-list li { padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); font-size: .9rem; }
+.history-list strong { color: var(--primary); }
+
+/* ===== Quiz layout ===== */
+.quiz-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(290px, 1fr); gap: 20px; align-items: start; }
+.quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.timer-chip { display: none; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; font-weight: 700; }
+.question-card { padding: 28px; }
+.question-card.enter { animation: slide-in .22s ease; }
+@keyframes slide-in { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+.q-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.q-index { font-weight: 700; color: var(--primary); }
+.q-text { font-size: 1.25rem; line-height: 1.5; font-weight: 650; margin-bottom: 20px; overflow-wrap: anywhere; }
+.options { display: grid; gap: 12px; }
+.option {
+  display: flex; align-items: flex-start; gap: 14px; width: 100%; text-align: left;
+  padding: 14px 16px; min-height: 56px; border-radius: 12px; cursor: pointer;
+  border: 2px solid var(--border); background: var(--surface);
+  transition: border-color var(--t), background var(--t), transform var(--t);
+}
+.option:hover:not([aria-disabled="true"]) { border-color: var(--primary); background: var(--surface-2); }
+.option .key { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; background: var(--neutral-soft); font-weight: 700; }
+.option .label { flex: 1; padding-top: 3px; overflow-wrap: anywhere; }
+.option .mark { flex: none; display: grid; place-items: center; width: 24px; height: 24px; padding-top: 4px; }
+.option[aria-checked="true"] { border-color: var(--primary); background: var(--primary-soft); }
+.option[aria-checked="true"] .key { background: var(--primary); color: var(--on-primary); }
+.option[aria-disabled="true"] { cursor: default; }
+.option.is-correct { border-color: var(--green); background: var(--green-soft); }
+.option.is-correct .key { background: var(--green); color: #fff; }
+.option.is-wrong { border-color: var(--red); background: var(--red-soft); }
+.option.is-wrong .key { background: var(--red); color: #fff; }
+.option.is-correct .mark { color: var(--green); }
+.option.is-wrong .mark { color: var(--red); }
+.feedback { margin-top: 16px; padding: 12px 14px; border-radius: 12px; font-weight: 600; }
+.feedback.ok { background: var(--green-soft); color: var(--green); }
+.feedback.bad { background: var(--red-soft); color: var(--red); }
+.q-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 20px; }
+.nav-bar { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; }
+.nav-bar .btn { min-width: 130px; }
+.drawer-open, .drawer-close { display: none; }
+
+/* ===== Sidebar ===== */
+.sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; display: grid; gap: 16px; position: sticky; top: 76px; max-height: calc(100vh - 92px); overflow-y: auto; }
+.sidebar-head { display: flex; justify-content: space-between; align-items: center; }
+.timer-box { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface-2); border-radius: 12px; }
+.timer-box svg { width: 24px; height: 24px; color: var(--primary); }
+.timer-value { font-size: 1.5rem; font-weight: 750; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.timer-box.warn .timer-value, .timer-chip.warn { color: var(--red); }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stats > div { background: var(--surface-2); border-radius: 10px; padding: 8px 12px; }
+.stats dt { font-size: .75rem; color: var(--muted); }
+.stats dd { font-size: 1.2rem; font-weight: 700; }
+.progress { height: 10px; border-radius: 999px; background: var(--neutral-soft); overflow: hidden; }
+.progress-bar { height: 100%; width: 0; background: var(--primary); border-radius: 999px; transition: width .3s ease; }
+.search { position: relative; }
+.search > span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; display: grid; }
+.search .input { padding-left: 38px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip { min-height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-size: .85rem; font-weight: 600; transition: background var(--t), border-color var(--t); }
+.chip:hover { border-color: var(--primary); }
+.chip[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+
+.navigator { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 8px; }
+.nav-item {
+  position: relative; min-height: 44px; border-radius: 10px; border: 2px solid transparent;
+  background: var(--neutral-soft); font-weight: 700; font-variant-numeric: tabular-nums; cursor: pointer;
+  transition: transform var(--t), background var(--t);
+}
+.nav-item:hover { transform: translateY(-1px); }
+.nav-item.s-answered { background: var(--blue-soft); color: var(--blue); }
+.nav-item.s-marked { background: var(--amber-soft); color: var(--text); border-color: var(--amber); }
+.nav-item.s-marked.s-answered::after { content: ""; position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+.nav-item.s-correct { background: var(--green-soft); color: var(--green); }
+.nav-item.s-wrong { background: var(--red-soft); color: var(--red); }
+.nav-item.s-current { background: var(--primary); color: var(--on-primary); border-color: var(--primary); box-shadow: 0 0 0 3px var(--ring); }
+
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; font-size: .8rem; color: var(--muted); }
+.legend li, .donut-legend li { display: flex; align-items: center; gap: 8px; }
+.dot { display: inline-block; width: 14px; height: 14px; border-radius: 4px; background: var(--neutral-soft); border: 2px solid transparent; flex: none; }
+.dot.s-answered { background: var(--blue-soft); border-color: var(--blue); }
+.dot.s-current { background: var(--primary); }
+.dot.s-marked { background: var(--amber-soft); border-color: var(--amber); }
+.dot.s-correct { background: var(--green); }
+.dot.s-wrong { background: var(--red); }
+.dot.s-unanswered { background: var(--neutral-soft); border-color: var(--border); }
+.backdrop { position: fixed; inset: 0; background: rgba(8, 10, 24, .5); z-index: 40; }
+
+/* ===== Result ===== */
+.result-card > * + * { margin-top: 18px; }
+.result-grid { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; }
+.donut-wrap { position: relative; width: 200px; height: 200px; }
+.donut { width: 100%; height: 100%; transform: rotate(-90deg); }
+.donut circle { fill: none; stroke-width: 5; }
+.donut .track { stroke: var(--neutral-soft); }
+.donut .seg-correct { stroke: var(--green); }
+.donut .seg-wrong { stroke: var(--red); }
+.donut .seg-skipped { stroke: var(--muted); opacity: .55; }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-center strong { font-size: 2rem; line-height: 1.1; }
+.grade { font-size: 1.8rem; font-weight: 800; }
+.grade.g-excellent { color: var(--green); }
+.grade.g-good { color: var(--blue); }
+.grade.g-pass { color: var(--amber); }
+.grade.g-poor { color: var(--red); }
+.donut-legend { display: grid; gap: 6px; margin-top: 10px; }
+.stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.stat-cards > div { background: var(--surface-2); border-radius: 12px; padding: 12px 16px; }
+.stat-cards dt { font-size: .8rem; color: var(--muted); }
+.stat-cards dd { font-size: 1.4rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+
+/* ===== Review ===== */
+.review-head { display: grid; gap: 12px; margin-bottom: 16px; }
+.review-list { display: grid; gap: 16px; }
+.review-item .q-text { font-size: 1.1rem; }
+.status-tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: .8rem; font-weight: 700; }
+.status-tag.t-correct { background: var(--green-soft); color: var(--green); }
+.status-tag.t-wrong { background: var(--red-soft); color: var(--red); }
+.status-tag.t-skipped { background: var(--neutral-soft); color: var(--muted); }
+.review-item .option { cursor: default; }
+.option .tag { flex: none; font-size: .75rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--surface); border: 1px solid currentColor; align-self: center; }
+.option.is-correct .tag { color: var(--green); }
+.option.is-wrong .tag { color: var(--red); }
+.option .tag.picked { color: var(--primary); }
+
+/* ===== Modal & toast ===== */
+dialog { border: 0; padding: 0; border-radius: var(--radius); background: var(--surface); color: var(--text); box-shadow: 0 20px 60px rgba(0, 0, 0, .35); width: min(440px, calc(100vw - 32px)); }
+dialog::backdrop { background: rgba(8, 10, 24, .55); }
+.modal-box { padding: 24px; display: grid; gap: 12px; }
+.modal-box .row { margin-top: 8px; }
+.toast-region { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); display: grid; gap: 8px; z-index: 80; width: min(420px, calc(100vw - 32px)); pointer-events: none; }
+.toast { padding: 12px 16px; border-radius: 12px; background: var(--text); color: var(--bg); box-shadow: var(--shadow); font-weight: 600; animation: toast-in .2s ease; }
+.toast.error { background: var(--red); color: #fff; }
+.toast.success { background: var(--green); color: #fff; }
+:root[data-theme="dark"] .toast.success, :root[data-theme="dark"] .toast.error { color: #0e1220; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ===== Responsive ===== */
+@media (max-width: 960px) {
+  .welcome-grid { grid-template-columns: 1fr; }
+  .quiz-layout { grid-template-columns: 1fr; }
+  .timer-chip { display: inline-flex; }
+  .nav-bar { position: sticky; bottom: 0; z-index: 20; margin: 16px -20px 0; padding: 10px 20px calc(10px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--border); }
+  .nav-bar .btn { min-width: 0; flex: 1; }
+  .drawer-open { display: inline-flex; flex: 1.3 !important; }
+  .drawer-close { display: grid; }
+  .sidebar {
+    position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 50;
+    max-height: 85vh; border-radius: 20px 20px 0 0; border-bottom: 0;
+    transform: translateY(105%); visibility: hidden;
+    transition: transform .25s ease, visibility .25s;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .sidebar.open { transform: none; visibility: visible; }
+}
+@media (max-width: 640px) {
+  .container { padding: 0 14px; }
+  .nav-bar { margin-left: -14px; margin-right: -14px; padding-left: 14px; padding-right: 14px; }
+  .card, .question-card { padding: 18px; }
+  .choice-grid.two { grid-template-columns: 1fr; }
+  .choice-grid.four { grid-template-columns: repeat(2, 1fr); }
+  .result-grid { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .donut-legend { justify-items: center; }
+  .stat-cards { grid-template-columns: 1fr; }
+  .q-text { font-size: 1.12rem; }
+  .kbd-hint { display: none; }
+  .brand-text { font-size: .95rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#app">Bỏ qua đến nội dung chính</a>
+
+  <header class="app-header">
+    <div class="container header-inner">
+      <button class="brand" type="button" data-action="home" aria-label="Về trang chủ">
+        <span class="brand-mark" aria-hidden="true" data-icon="target"></span>
+        <span class="brand-text">Trắc nghiệm Giáo lý</span>
+      </button>
+      <button class="icon-btn" type="button" data-action="toggle-theme" id="theme-toggle" aria-label="Chuyển giao diện sáng/tối"></button>
+    </div>
+  </header>
+
+  <main id="app" class="container" tabindex="-1">
+
+    <!-- Loading -->
+    <section id="view-loading" class="view" aria-busy="true" aria-live="polite">
+      <div class="card skeleton-card">
+        <div class="skeleton sk-title"></div>
+        <div class="skeleton sk-line"></div>
+        <div class="skeleton sk-line short"></div>
+        <div class="skeleton sk-block"></div>
+      </div>
+      <p class="muted center">Đang tải câu hỏi…</p>
+    </section>
+
+    <!-- Error -->
+    <section id="view-error" class="view" hidden>
+      <div class="card state-card">
+        <div class="state-icon danger" data-icon="alert" aria-hidden="true"></div>
+        <h1 class="h2" tabindex="-1" id="error-title">Không tải được dữ liệu</h1>
+        <p id="error-message" class="muted"></p>
+        <ul id="error-details" class="detail-list" hidden></ul>
+        <div class="row center-row">
+          <button class="btn primary" type="button" data-action="reload-data">Thử lại</button>
+        </div>
+              </div>
+    </section>
+
+    <!-- Welcome -->
+    <section id="view-welcome" class="view" hidden>
+      <div class="welcome-grid">
+        <div class="card hero">
+          <p class="eyebrow">Bài trắc nghiệm</p>
+          <h1 class="h1" tabindex="-1" id="welcome-title">Trắc nghiệm Giáo lý</h1>
+          <p class="muted">Ngân hàng hiện có <strong id="welcome-total">0</strong> câu hỏi một lựa chọn. Chọn chế độ, số câu và bắt đầu làm bài.</p>
+
+          <div id="resume-card" class="notice" hidden></div>
+
+          <form id="setup-form" class="setup" novalidate>
+            <fieldset class="field">
+              <legend>Chế độ làm bài</legend>
+              <div class="choice-grid two">
+                <label class="choice">
+                  <input type="radio" name="mode" value="practice" checked>
+                  <span class="choice-body">
+                    <strong>Luyện tập</strong>
+                    <span class="muted small">Không giới hạn thời gian, kiểm tra đáp án từng câu.</span>
+                  </span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="mode" value="exam">
+                  <span class="choice-body">
+                    <strong>Thi thử</strong>
+                    <span class="muted small">Đồng hồ đếm ngược, chỉ có đáp án sau khi nộp bài.</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="field" id="exam-time-field" hidden>
+              <label for="exam-minutes">Thời gian thi (phút)</label>
+              <input id="exam-minutes" class="input narrow" type="number" min="1" max="300" step="1" value="30" inputmode="numeric">
+              <p class="muted small" id="exam-minutes-error" role="alert" hidden></p>
+            </div>
+
+            <fieldset class="field">
+              <legend>Số câu hỏi</legend>
+              <div class="choice-grid four" id="count-choices"></div>
+              <p class="muted small" id="count-hint" aria-live="polite"></p>
+            </fieldset>
+
+            <fieldset class="field">
+              <legend>Tùy chọn</legend>
+              <label class="check"><input type="checkbox" id="opt-shuffle-q"> <span>Đảo thứ tự câu hỏi</span></label>
+              <label class="check"><input type="checkbox" id="opt-shuffle-o"> <span>Đảo thứ tự đáp án</span></label>
+            </fieldset>
+
+            <button class="btn primary lg" type="submit" id="start-btn"></button>
+          </form>
+
+          <details id="data-warnings" class="warnings" hidden>
+            <summary></summary>
+            <ul class="detail-list"></ul>
+          </details>
+        </div>
+
+        <aside class="card history" aria-labelledby="history-title">
+          <h2 class="h3" id="history-title">Lịch sử gần đây</h2>
+          <ul id="history-list" class="history-list"></ul>
+          <p id="history-empty" class="muted small">Chưa có lượt làm bài nào.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Quiz -->
+    <section id="view-quiz" class="view" hidden>
+      <div class="quiz-layout">
+        <div class="quiz-main">
+          <div class="quiz-meta">
+            <span class="badge" id="mode-badge"></span>
+            <span class="timer-chip" aria-hidden="true"><span data-icon="clock"></span><span data-timer>--:--</span></span>
+          </div>
+
+          <article class="card question-card" id="question-card" aria-labelledby="question-text">
+            <div class="q-head">
+              <span class="q-index" id="q-index"></span>
+              <button class="btn ghost sm" type="button" data-action="bookmark" id="bookmark-btn" aria-pressed="false"></button>
+            </div>
+            <h2 class="q-text" id="question-text" tabindex="-1"></h2>
+            <div class="options" id="options" role="radiogroup" aria-labelledby="question-text"></div>
+            <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+            <div class="q-actions" id="check-wrap">
+              <button class="btn primary" type="button" data-action="check" id="check-btn">Kiểm tra đáp án</button>
+              <span class="muted small kbd-hint">Phím tắt: 1–<span id="kbd-max">4</span> chọn đáp án, ← → chuyển câu</span>
+            </div>
+          </article>
+
+          <nav class="nav-bar" aria-label="Điều hướng câu hỏi">
+            <button class="btn" type="button" data-action="prev" id="prev-btn"></button>
+            <button class="btn drawer-open" type="button" data-action="toggle-drawer" id="drawer-btn" aria-controls="sidebar" aria-expanded="false"></button>
+            <button class="btn" type="button" data-action="next" id="next-btn"></button>
+          </nav>
+        </div>
+
+        <aside class="sidebar" id="sidebar" aria-label="Tiến độ và danh sách câu hỏi">
+          <div class="sidebar-head">
+            <h2 class="h3">Tiến độ</h2>
+            <button class="icon-btn drawer-close" type="button" data-action="close-drawer" aria-label="Đóng danh sách"></button>
+          </div>
+
+          <div class="timer-box" id="timer-box">
+            <span data-icon="clock" aria-hidden="true"></span>
+            <div>
+              <div class="muted small" id="timer-label">Thời gian</div>
+              <div class="timer-value" data-timer role="timer">--:--</div>
+            </div>
+          </div>
+
+          <dl class="stats">
+            <div><dt>Tổng số</dt><dd id="st-total">0</dd></div>
+            <div><dt>Đã trả lời</dt><dd id="st-answered">0</dd></div>
+            <div><dt>Chưa trả lời</dt><dd id="st-unanswered">0</dd></div>
+            <div><dt>Đã đánh dấu</dt><dd id="st-marked">0</dd></div>
+            <div id="st-correct-wrap"><dt>Đã kiểm tra đúng</dt><dd id="st-correct">0</dd></div>
+            <div id="st-wrong-wrap"><dt>Đã kiểm tra sai</dt><dd id="st-wrong">0</dd></div>
+          </dl>
+
+          <div class="progress" role="progressbar" aria-label="Tiến độ trả lời" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+          <p class="muted small" id="progress-text"></p>
+
+          <div class="filters">
+            <label class="sr-only" for="quiz-search">Tìm câu hỏi theo nội dung</label>
+            <div class="search">
+              <span data-icon="search" aria-hidden="true"></span>
+              <input id="quiz-search" class="input" type="search" placeholder="Tìm câu hỏi…" autocomplete="off">
+            </div>
+            <div class="chips" id="quiz-filters" role="group" aria-label="Lọc câu hỏi"></div>
+          </div>
+
+          <div class="navigator" id="navigator" role="group" aria-label="Danh sách câu hỏi"></div>
+          <p class="empty" id="navigator-empty" hidden>Không có câu hỏi nào khớp bộ lọc.</p>
+
+          <ul class="legend" aria-label="Chú thích màu">
+            <li><i class="dot s-unanswered"></i>Chưa trả lời</li>
+            <li><i class="dot s-answered"></i>Đã trả lời</li>
+            <li><i class="dot s-current"></i>Đang xem</li>
+            <li><i class="dot s-marked"></i>Đã đánh dấu</li>
+            <li><i class="dot s-correct"></i>Đúng</li>
+            <li><i class="dot s-wrong"></i>Sai</li>
+          </ul>
+
+          <button class="btn primary block" type="button" data-action="submit"></button>
+        </aside>
+      </div>
+      <div class="backdrop" id="backdrop" data-action="close-drawer" hidden></div>
+    </section>
+
+    <!-- Result -->
+    <section id="view-result" class="view" hidden>
+      <div class="card result-card">
+        <p class="eyebrow" id="result-mode"></p>
+        <h1 class="h1" tabindex="-1" id="result-title">Kết quả</h1>
+        <div class="result-grid">
+          <div class="donut-wrap">
+            <svg id="donut" viewBox="0 0 42 42" class="donut" role="img" aria-label="Biểu đồ kết quả"></svg>
+            <div class="donut-center">
+              <strong id="result-percent">0%</strong>
+              <span class="muted small">chính xác</span>
+            </div>
+          </div>
+          <div>
+            <p class="grade" id="result-grade"></p>
+            <p class="muted" id="result-score"></p>
+            <ul class="donut-legend">
+              <li><i class="dot s-correct"></i>Đúng: <strong id="r-correct">0</strong></li>
+              <li><i class="dot s-wrong"></i>Sai: <strong id="r-wrong">0</strong></li>
+              <li><i class="dot s-unanswered"></i>Bỏ qua: <strong id="r-skipped">0</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <dl class="stat-cards">
+          <div><dt>Tổng số câu</dt><dd id="r-total">0</dd></div>
+          <div><dt>Điểm số</dt><dd id="r-points">0</dd></div>
+          <div><dt>Thời gian đã dùng</dt><dd id="r-time">00:00</dd></div>
+        </dl>
+
+        <label class="check"><input type="checkbox" id="retry-include-skipped"> <span>Tính cả câu chưa trả lời khi luyện tập lại</span></label>
+        <p class="muted small" id="retry-note" role="status"></p>
+
+        <div class="row wrap">
+          <button class="btn primary" type="button" data-action="open-review"></button>
+          <button class="btn" type="button" data-action="retry-wrong" id="retry-wrong-btn"></button>
+          <button class="btn" type="button" data-action="restart"></button>
+          <button class="btn ghost" type="button" data-action="home"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Review -->
+    <section id="view-review" class="view" hidden>
+      <div class="review-head card">
+        <div class="row between wrap">
+          <h1 class="h2" tabindex="-1" id="review-title">Xem lại bài làm</h1>
+          <button class="btn" type="button" data-action="back-result"></button>
+        </div>
+        <div class="search">
+          <span data-icon="search" aria-hidden="true"></span>
+          <input id="review-search" class="input" type="search" placeholder="Tìm câu hỏi…" aria-label="Tìm câu hỏi theo nội dung" autocomplete="off">
+        </div>
+        <div class="chips" id="review-filters" role="group" aria-label="Lọc kết quả"></div>
+      </div>
+      <div id="review-list" class="review-list"></div>
+      <p class="empty card" id="review-empty" hidden>Không có câu hỏi nào khớp bộ lọc.</p>
+    </section>
+  </main>
+
+  <dialog id="modal" aria-labelledby="modal-title" aria-describedby="modal-message">
+    <form method="dialog" class="modal-box">
+      <h2 class="h3" id="modal-title"></h2>
+      <p id="modal-message" class="muted"></p>
+      <div class="row end">
+        <button class="btn" value="cancel" id="modal-cancel"></button>
+        <button class="btn primary" value="ok" id="modal-ok"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+
+  <script id="quiz-data" type="application/json">[{"id":"q-001","type":"single_choice","content":"Người Việt Nam quan niệm thế nào về con người?","options":[{"id":"A","text":"Chủ thể muôn loài, có quyền quyết định vận mệnh chính mình."},{"id":"B","text":"Gạch nối giữa trời và đất, giữa con người với nhau."},{"id":"C","text":"Gạch nối giữa người với người, với trách nhiệm xây dựng cộng đồng xã hội."},{"id":"D","text":"Chủ thể cho chính mình, với quyền tuyệt đối quyết định vận mệnh của mình."}],"correctAnswer":"B"},{"id":"q-002","type":"single_choice","content":"Con người khác con vật nhờ những đặc tính nào?","options":[{"id":"A","text":"Nhờ có lý trí, ý chí và tự do."},{"id":"B","text":"Nhờ biết suy tư, lý luận và phản biện."},{"id":"C","text":"Nhờ biết nỗ lực sống hướng thiện, công ích."},{"id":"D","text":"Nhờ tự bản chất “nhân chi sơ tính bản thiện”."}],"correctAnswer":"A"},{"id":"q-003","type":"single_choice","content":"Theo giáo lý Công giáo, phẩm giá con người được đặt trên nền tảng nào?","options":[{"id":"A","text":"Con người là sản phẩm của quy luật tiến hóa tự nhiên."},{"id":"B","text":"Con người được sinh ra nhờ biến chuyển của vạn vật vũ trụ."},{"id":"C","text":"Con người là sản phẩm từ nguyên lý vận hành xã hội và hoạt động vũ trụ."},{"id":"D","text":"Con người được Thiên Chúa dựng nên theo hình ảnh của Ngài."}],"correctAnswer":"D"},{"id":"q-004","type":"single_choice","content":"Với phẩm giá được đặt trên nền tảng là hình ảnh Thiên Chúa, con người có khả năng gì?","options":[{"id":"A","text":"Nhận biết, yêu mến Thiên Chúa, và được mời gọi hưởng hạnh phúc bất diệt của Ngài."},{"id":"B","text":"Làm chủ và sử dụng vạn vật với tất cả khả năng Chúa ban để mang đến hạnh phúc cho mình."},{"id":"C","text":"Xây dựng thế giới phát triển mọi chiều kích với tất cả khả năng khôn ngoan hiểu biết của mình."},{"id":"D","text":"Thực hiện một thế giới mạnh được yếu thua, cùng xây dựng phát triển xã hội con người thịnh vượng."}],"correctAnswer":"A"},{"id":"q-005","type":"single_choice","content":"Đối với Công giáo, ơn gọi căn bản của con người là gì?","options":[{"id":"A","text":"Tình yêu, bao gồm tình yêu với Thiên Chúa và với tha nhân."},{"id":"B","text":"Công bằng, bao gồm công bằng cho cá nhân và xã hội."},{"id":"C","text":"Thiện ích, bao gồm thiện ích cho bản thân và cho cộng đồng xã hội."},{"id":"D","text":"Tình yêu, bao gồm tình yêu có trách nhiệm giữa cá nhân và xã hội."}],"correctAnswer":"A"},{"id":"q-006","type":"single_choice","content":"Được dựng nên theo hình ảnh Thiên Chúa, Đấng duy nhất có Ba Ngôi, con người được mời gọi thế nào?","options":[{"id":"A","text":"Tôn trọng nhau dầu có những khác biệt."},{"id":"B","text":"Đón nhận nhau cả thân xác lẫn tinh thần."},{"id":"C","text":"Sống trong sự hiệp thông với nhau."},{"id":"D","text":"Cùng sống niềm tin tôn vinh Thiên Chúa."}],"correctAnswer":"C"},{"id":"q-007","type":"single_choice","content":"Tại sao chương trình Giáo lý Hôn nhân lại quan tâm đến phẩm giá và ơn gọi con người?","options":[{"id":"A","text":"Vì mục đích mà chương trình Giáo lý Hôn nhân nhắm đến."},{"id":"B","text":"Vì phẩm giá và ơn gọi là trách nhiệm của đạo lý Kitô giáo."},{"id":"C","text":"Vì đây là nền tảng xây dựng Giáo lý Hôn nhân Kitô giáo."},{"id":"D","text":"Vì trách nhiệm của Kitô hữu là hướng đến hôn nhân gia đình."}],"correctAnswer":"C"},{"id":"q-008","type":"single_choice","content":"Tại sao con người hiểu rằng mình có xác giống muôn loài, nhưng lại khác muôn loài?","options":[{"id":"A","text":"Vì con người là tạo vật duy nhất được tạo dựng giống hình ảnh Thiên Chúa."},{"id":"B","text":"Vì con người được tạo dựng một cách độc đáo riêng biệt duy nhất."},{"id":"C","text":"Vì con người là tạo vật duy nhất được thành hình theo giống nòi."},{"id":"D","text":"Vì con người là chóp đỉnh trong tiến trình tiến hóa của vũ trụ."}],"correctAnswer":"A"},{"id":"q-009","type":"single_choice","content":"Với tư cách là một nhân vị, con người có khả năng gì?","options":[{"id":"A","text":"Khả năng hướng đến tư cách làm chủ vận mệnh của bản thân và cộng đồng nhờ vào tư duy sáng tạo và hành động."},{"id":"B","text":"Khả năng suy tư trên các sự kiện và ý nghĩa của chúng, đồng thời có thể chọn lựa tự do hành động."},{"id":"C","text":"Khả năng tự do chọn lựa hành động theo xu hướng bản năng và điều kiện cá nhân và xã hội."},{"id":"D","text":"Khả năng tìm kiếm lợi ích cho mình và xã hội, nhờ vào sự suy tư tìm lợi ích cho bản thân và xã hội."}],"correctAnswer":"B"},{"id":"q-010","type":"single_choice","content":"Tại sao con người lại cần một “trợ tá tương xứng”?","options":[{"id":"A","text":"Vì biết mình là độc đáo, nhưng là một chủ thể liên vị, có tương quan."},{"id":"B","text":"Vì cho mình là độc đáo, nhưng cần thêm cộng tác để hoàn thiện."},{"id":"C","text":"Vì con người chỉ có thể tìm được hạnh phúc thật sự khi có được trợ tá tương xứng."},{"id":"D","text":"Vì con người là một chủ thể liên vị mang tính xã hội, trưởng thành trong xã hội."}],"correctAnswer":"A"},{"id":"q-011","type":"single_choice","content":"Tình yêu nam nữ là gì?","options":[{"id":"A","text":"Là tình cảm giữa người nam và người nữ hướng về nhau, để họ có thể chăm sóc nhau trọn đời."},{"id":"B","text":"Là sự rung động trong tâm hồn giữa một người nam và một người nữ, thúc đẩy họ đến với nhau."},{"id":"C","text":"Là tình cảm giữa hai người, với ước muốn yêu thương, tôn trọng và muốn gắn bó lâu dài với nhau."},{"id":"D","text":"Là tình cảm giữa một người nam và một người nữ, thúc đẩy họ gắn bó và tự hiến cho nhau."}],"correctAnswer":"C"},{"id":"q-012","type":"single_choice","content":"Tình yêu nam nữ bao gồm những yếu tố nào?","options":[{"id":"A","text":"Sự chân thành yêu thương và tôn trọng nhau."},{"id":"B","text":"Tình dục, sự tin tưởng và chung thủy."},{"id":"C","text":"Công bằng, tin tưởng và thủy chung."},{"id":"D","text":"Tình dục, tình bạn và tình mến."}],"correctAnswer":"D"},{"id":"q-013","type":"single_choice","content":"Đâu là mẫu gương tình yêu của đôi bạn nam nữ Công giáo?","options":[{"id":"A","text":"Thánh Giuse và Đức Maria."},{"id":"B","text":"Thánh Gioakim và Thánh Anna."},{"id":"C","text":"Đức Kitô chịu đóng đinh."},{"id":"D","text":"Chúa Cha, Chúa Con và Chúa Thánh Thần."}],"correctAnswer":"C"},{"id":"q-014","type":"single_choice","content":"Thế nào là một tình yêu đích thực và trọn vẹn?","options":[{"id":"A","text":"Là một tình yêu tha thứ tất cả, tin tưởng tất cả, hy vọng tất cả, chịu đựng tất cả."},{"id":"B","text":"Là một tình yêu chung thủy và chân thành, không giả dối."},{"id":"C","text":"Là một tình yêu được Thiên Chúa chúc lành."},{"id":"D","text":"Là một tình yêu sẵn sàng hy sinh tất cả mọi sự vì người mình yêu."}],"correctAnswer":"A"},{"id":"q-015","type":"single_choice","content":"Theo Kitô giáo, giới tính là gì?","options":[{"id":"A","text":"Là những đặc điểm khác biệt do trật tự tự nhiên hình thành nên để phân biệt người nam và người nữ."},{"id":"B","text":"Là những khác biệt về mặt thể lý và tâm lý giữa người nam và người nữ để hướng đến đời sống hôn nhân gia đình."},{"id":"C","text":"Là đặc ân mà Thiên Chúa ấn định cho con người, với những khác biệt nhưng bổ túc cho nhau nhằm bảo toàn nòi giống."},{"id":"D","text":"Là ân huệ Thiên Chúa ban cho con người khi họ được tạo dựng, bao gồm những đặc điểm phân biệt người nam với người nữ."}],"correctAnswer":"D"},{"id":"q-016","type":"single_choice","content":"Tính dục là gì?","options":[{"id":"A","text":"Đặc điểm bên ngoài để phân biệt người nam và người nữ, nhằm giúp nhau xây dựng đời sống vợ chồng."},{"id":"B","text":"Cách thế mà con người vận dụng bản năng giới tính để kết hợp với nhau nên vợ chồng, nhằm bảo toàn nòi giống."},{"id":"C","text":"Khuynh hướng tự nhiên hướng tới người khác phái, thúc đẩy họ tìm kiếm, hiểu biết và yêu thương nhau."},{"id":"D","text":"Xu hướng tự nhiên nơi con người do môi trường sống, quan điểm giáo dục tạo thành, nhờ đó con người đến được với nhau, làm nên đời sống vợ chồng."}],"correctAnswer":"C"},{"id":"q-017","type":"single_choice","content":"Tình dục là gì?","options":[{"id":"A","text":"Là sức mạnh của tính dục lôi kéo đôi nam nữ hoà hợp với nhau cả hồn và xác, nhằm mở ra cửa ngõ cho sự sống mới, xây dựng tế bào gia đình."},{"id":"B","text":"Là một trong những cách thể hiện tính dục; là quan hệ cả thân xác và tâm hồn; là sức thúc đẩy mãnh liệt khiến cho đôi nam nữ đến với nhau trong đời sống hôn nhân."},{"id":"C","text":"Là quan hệ thân xác và tâm hồn của đôi bạn nam nữ, với mục đích hướng đến tạo dựng sự sống mới nhằm xây dựng đời sống hôn nhân gia đình."},{"id":"D","text":"Là sức thúc đẩy mãnh liệt của tính dục khiến cho đôi nam nữ đến với nhau trong đời sống hôn nhân gia đình, hướng đến việc bảo toàn nòi giống."}],"correctAnswer":"B"},{"id":"q-018","type":"single_choice","content":"Để thể hiện tính dục cách trọn vẹn, đôi bạn nam nữ phải làm gì?","options":[{"id":"A","text":"Quan tâm đến giá trị đạo đức, xây dựng sự linh thánh trong đời."},{"id":"B","text":"Rèn luyện thể xác, trau dồi tinh thần, chăm lo đời sống tâm linh."},{"id":"C","text":"Rèn luyện thân xác cường tráng, hầu thăng hoa đời sống tình dục."},{"id":"D","text":"Có một kế hoạch sinh hoạt hợp lý, giúp nhau hạnh phúc."}],"correctAnswer":"B"},{"id":"q-019","type":"single_choice","content":"Sự khiết tịnh trong đời sống hôn nhân là gì?","options":[{"id":"A","text":"Trung thành với người bạn đời trong mọi hoàn cảnh sống."},{"id":"B","text":"Làm chủ giới tính, nhờ đó biết sống tiết độ."},{"id":"C","text":"Sinh hoạt vợ chồng điều độ."},{"id":"D","text":"Giữ mình khỏi những cám dỗ."}],"correctAnswer":"B"},{"id":"q-020","type":"single_choice","content":"Để thể hiện tình dục trong hôn nhân một cách đúng đắn, đôi bạn nam nữ phải làm gì?","options":[{"id":"A","text":"Bằng mọi cách làm thoả mãn mọi ước muốn đam mê xác thịt, xây dựng một đời sống hưởng thụ phù hợp với điều kiện sống của mình."},{"id":"B","text":"Dùng lý trí nỗ lực xây dựng đời sống khổ chế, dẹp bỏ mọi khát vọng của đam mê tình dục, hướng đến đời sống thanh cao toàn diện."},{"id":"C","text":"Xây dựng đời sống tình dục phù hợp với năng lực, điều kiện sống của gia đình và xã hội, hướng đến một đại gia đình hạnh phúc."},{"id":"D","text":"Làm chủ bản năng tình dục, bằng cách dùng lý trí thực tập khổ chế, hướng dẫn đam mê và ước muốn của giác quan thích hợp với hoàn cảnh mình sống."}],"correctAnswer":"D"},{"id":"q-021","type":"single_choice","content":"Sinh hoạt tình dục trở nên xấu khi nào?","options":[{"id":"A","text":"Khi vợ chồng ăn ở với nhau với tần suất thường xuyên."},{"id":"B","text":"Khi không nhắm mục đích sinh con để duy trì nòi giống."},{"id":"C","text":"Khi hành động ngoài hôn nhân, thiếu tôn trọng người bạn đời."},{"id":"D","text":"Khi không được sự đồng tình của một trong hai người."}],"correctAnswer":"C"},{"id":"q-022","type":"single_choice","content":"Tính dục phục vụ cho tình yêu vợ chồng thế nào?","options":[{"id":"A","text":"Giúp đem lại niềm hoan lạc và sự gắn bó trọn vẹn cho đời sống vợ chồng, hướng đến việc sinh sản."},{"id":"B","text":"Đem lại sự sống mới cho gia đình, bảo toàn nòi giống, góp phần xây dựng nền văn minh tình yêu."},{"id":"C","text":"Đem lại niềm hoan lạc và sự gắn bó sâu xa trong đời sống, mở ngõ sự sống mới và diễn tả sự phong phú của Thiên Chúa."},{"id":"D","text":"Mở ngõ cho sự sống mới, diễn tả sự phong phú của Thiên Chúa, đồng thời góp phần xây dựng nền văn minh tình yêu."}],"correctAnswer":"C"},{"id":"q-023","type":"single_choice","content":"Đôi bạn nam nữ phải làm gì để thể hiện tình dục cách trọn vẹn?","options":[{"id":"A","text":"Rèn luyện thể xác, trau dồi tinh thần, chăm lo đời sống tâm linh."},{"id":"B","text":"Yêu thương và trao hiến trọn vẹn thân xác cho nhau."},{"id":"C","text":"Có kế hoạch quan hệ thân mật với nhau cách điều độ và hợp lý."},{"id":"D","text":"Rèn luyện thân thể, sống đời chung thuỷ một vợ một chồng."}],"correctAnswer":"A"},{"id":"q-024","type":"single_choice","content":"Vợ chồng cần nắm giữ những nguyên tắc luân lý nào trong đời sống tình dục?","options":[{"id":"A","text":"Hành vi tình dục trong khuôn khổ là chính đáng, cần được tôn trọng nhưng không đề cao, phải trong sạch và có tiết độ."},{"id":"B","text":"Giáo hội luôn đề cao vì hành vi tình dục vốn có bản chất lương thiện, đồng thời có thể mang lại lớp người thừa kế cho Giáo Hội."},{"id":"C","text":"Vợ chồng phải sống chung thủy và tôn trọng lẫn nhau trong mọi hành vi tình dục."},{"id":"D","text":"Vợ chồng phải chung thủy, giúp nhau thăng hoa trong hành vi tình dục và đón nhận trách nhiệm làm cha mẹ."}],"correctAnswer":"D"},{"id":"q-025","type":"single_choice","content":"Những nguyên tắc tâm lý về sự khác biệt giữa nam và nữ?","options":[{"id":"A","text":"Luật ưu tiên, tăng trưởng, phân cách, chi tiết, và bất đồng cảm."},{"id":"B","text":"Luật ưu tiên, phân cách, cân bằng, bất đồng cảm, và thính giác."},{"id":"C","text":"Luật ưu tiên, phân cách, chi tiết, bất đồng cảm và thính giác."},{"id":"D","text":"Luật ưu tiên, cân bằng, bất đồng cảm, nâng đỡ và thính giác."}],"correctAnswer":"C"},{"id":"q-026","type":"single_choice","content":"Luật ưu tiên trong nguyên tắc tâm lý là gì?","options":[{"id":"A","text":"Nam giới ưu tiên nét đẹp bên trong; nữ giới thích vẻ đẹp bên ngoài."},{"id":"B","text":"Nam giới ưu tiên thể xác; nữ giới ưu tiên tình cảm."},{"id":"C","text":"Nam giới ưu tiên tài năng; nữ giới ưu tiên sắc đẹp."},{"id":"D","text":"Trai tham sắc; gái tham tài."}],"correctAnswer":"B"},{"id":"q-027","type":"single_choice","content":"Luật phân cách trong nguyên tắc tâm lý là gì?","options":[{"id":"A","text":"Nam chuyên chú vào công danh sự nghiệp; nữ bận tâm đến gia đình."},{"id":"B","text":"Nam quan tâm lớn lớn nhất là gia đình; còn nữ là công việc."},{"id":"C","text":"Nam bận tâm nhiều lãnh vực; quan tâm lớn nhất của nữ là gia đình."},{"id":"D","text":"Nam quan tâm nhiều đến xã hội; còn nữ chỉ lo cho gia đình."}],"correctAnswer":"C"},{"id":"q-028","type":"single_choice","content":"Thế nào là luật thính giác trong nguyên tắc luân lý?","options":[{"id":"A","text":"Nam không thích nói ngọt; nữ ưa nghe ngọt."},{"id":"B","text":"Nam háo ngọt; nữ không thích nghe điều xu nịnh."},{"id":"C","text":"Nam không thích nói nhiều; nữ thích nghe, dễ tin."},{"id":"D","text":"Nam thích nghe, dễ tin; nữ không thích nói nhiều."}],"correctAnswer":"A"},{"id":"q-029","type":"single_choice","content":"Luật chi tiết trong nguyên tắc tâm lý là gì?","options":[{"id":"A","text":"Nam quan tâm đến điều cốt yếu, tổng thể; nữ bận tâm đến các chi tiết."},{"id":"B","text":"Nam thường nhìn vấn đề đơn giản; nữ lại hay phức tạp hoá."},{"id":"C","text":"Nam hay đi vào chi tiết; nữ bận tâm nhiều đến cái cốt lõi."},{"id":"D","text":"Nam bận tâm nhiều đến cái cốt lõi mà nữ thường bỏ qua."}],"correctAnswer":"A"},{"id":"q-030","type":"single_choice","content":"Thế nào là luật bất đồng cảm trong nguyên tắc luân lý?","options":[{"id":"A","text":"Nam phản ứng chậm nhưng kéo dài; nữ phản ứng nhanh nhưng mau dứt."},{"id":"B","text":"Nam làm nhiều nhưng ít suy tư; nữ suy tư nhiều, làm ít."},{"id":"C","text":"Nam phản ứng nhanh nhưng mau dứt; nữ phản ứng chậm nhưng kéo dài."},{"id":"D","text":"Nam giỏi hành động, nữ chú tâm tới việc suy tư nhiều hơn."}],"correctAnswer":"C"},{"id":"q-031","type":"single_choice","content":"Vợ chồng làm thế nào để tạo sự hòa hợp trọn vẹn và vững bền?","options":[{"id":"A","text":"Hiểu rõ những khác biệt để cảm thông và bổ túc cho nhau."},{"id":"B","text":"Sống đạo tốt, quan tâm đến nhau, và chu toàn bổn phận."},{"id":"C","text":"Bảo đảm đời sống vật chất và tinh thần cho người bạn đời."},{"id":"D","text":"Xây dựng đời sống gia đình dựa trên những giá trị xã hội mang lại."}],"correctAnswer":"A"},{"id":"q-032","type":"single_choice","content":"Hôn nhân là gì?","options":[{"id":"A","text":"Giao ước ký kết giữa người nam và người nữ, được bày tỏ công khai, với đầy đủ tự do ưng thuận và trách nhiệm, để trở thành vợ chồng."},{"id":"B","text":"Giao ước ký kết giữa hai người, với đầy đủ tự do ưng thuận và ý thức trách nhiệm, để sống cuộc sống hôn nhân gia đình."},{"id":"C","text":"Giao ước sống chung của những người hoàn toàn tự do và trưởng thành, không bị ràng buộc nào, để sống đời hôn nhân gia đình."},{"id":"D","text":"Giao ước giữa người nam và người nữ, muốn cùng nhau sống đời hôn nhân gia đình và được xã hội chấp nhận."}],"correctAnswer":"A"},{"id":"q-033","type":"single_choice","content":"Đối với người Công giáo, ai đã thiết lập hôn nhân?","options":[{"id":"A","text":"Giáo hội là chủ thể thiết lập nên đời sống hôn nhân khi chủ sự cử hành bí tích hôn nhân."},{"id":"B","text":"Truyền thống Giáo hội là nguyên lý lập nên đời sống hôn nhân gia đình."},{"id":"C","text":"Thiên Chúa đã thiết lập hôn nhân khi Ngài dựng nên người nam và người nữ."},{"id":"D","text":"Thiên Chúa đã thiết lập hôn nhân khi Chúa Giêsu lập bí tích hôn nhân tại tiệc cưới Cana."}],"correctAnswer":"C"},{"id":"q-034","type":"single_choice","content":"Hôn nhân Công giáo là gì?","options":[{"id":"A","text":"Thể chế tôn giáo do Giáo hội thiết lập, nhằm giúp cho người tín hữu sống đức tin trong vai trò vợ chồng giữa lòng xã hội."},{"id":"B","text":"Bí tích do Chúa Giêsu thiết lập nhằm củng cố Giáo hội qua việc giúp cho các tín hữu sống đời vợ chồng cách trọn vẹn."},{"id":"C","text":"Bí tích do Chúa Giêsu lập để kết hợp hai tín hữu nam nữ thành vợ chồng, cùng ban ơn cho họ sống xứng đáng ơn gọi của mình."},{"id":"D","text":"Thể chế do Giáo hội thiết lập để mang ơn ích đến cho những tín hữu sống đời vợ chồng."}],"correctAnswer":"C"},{"id":"q-035","type":"single_choice","content":"Đặc tính hôn nhân Kitô giáo là gì?","options":[{"id":"A","text":"Đơn hôn và vĩnh hôn."},{"id":"B","text":"Trao hiến trọn vẹn, chung thủy và đón nhận con cái."},{"id":"C","text":"Chung thủy suốt đời, yêu thương, và nâng đỡ nhau."},{"id":"D","text":"Yêu thương, bao dung và tha thứ cho nhau."}],"correctAnswer":"A"},{"id":"q-036","type":"single_choice","content":"Chúa Giêsu đã phục hồi và hoàn thiện hôn nhân như thế nào?","options":[{"id":"A","text":"Nâng hôn nhân lên hàng bí tích, ban cho đôi bạn sức mạnh và ân sủng."},{"id":"B","text":"Làm cho hôn nhân giữa người nam và người nữ có một giá trị cao đẹp và linh thánh."},{"id":"C","text":"Thiết lập định chế đặc biệt qua những quy tắc luật lệ trong Giáo hội."},{"id":"D","text":"Thông qua xã hội, Thiên Chúa xây dựng một lề luật đặc trưng cho hôn nhân gia đình."}],"correctAnswer":"A"},{"id":"q-037","type":"single_choice","content":"Tại sao đời sống hôn nhân cần có ân sủng?","options":[{"id":"A","text":"Giúp vợ chồng đạt tới sự hòa hợp như Thiên Chúa muốn."},{"id":"B","text":"Giúp gia đình liên kết mật thiết với Giáo hội."},{"id":"C","text":"Hỗ trợ vợ chồng sinh dưỡng con cái, củng cố đức tin trong đời sống."},{"id":"D","text":"Nâng cao đời sống đức tin của mọi thành viên trong gia đình."}],"correctAnswer":"A"},{"id":"q-038","type":"single_choice","content":"Thiên Chúa thiết lập hôn nhân nhằm mục đích gì?","options":[{"id":"A","text":"Duy trì nòi giống và phục vụ Giáo hội, xã hội."},{"id":"B","text":"Yêu thương, giúp đỡ nhau, sinh sản và giáo dục con cái."},{"id":"C","text":"Yêu thương, tôn trọng và giúp nhau trưởng thành."},{"id":"D","text":"Bảo vệ sự tồn tại của Giáo hội và duy trì cân bằng xã hội."}],"correctAnswer":"B"},{"id":"q-039","type":"single_choice","content":"Vì sao đôi bạn phải bày tỏ tình yêu của mình qua định chế hôn nhân?","options":[{"id":"A","text":"Thể hiện sự chung thủy trong tình yêu, và quyết định dứt khoát."},{"id":"B","text":"Thể hiện tính nghiêm túc, quyết định dứt khoát thuộc trọn về nhau."},{"id":"C","text":"Thể hiện sự hy sinh cho nhau, thuộc trọn về nhau một cách dứt khoát."},{"id":"D","text":"Thể hiện một cách trang trọng sống đời hôn nhân vợ chồng với nhau."}],"correctAnswer":"B"},{"id":"q-040","type":"single_choice","content":"Cho biết các yếu tố làm nên kết ước hôn nhân thành sự?","options":[{"id":"A","text":"Được thực hiện bởi hai người có tự do với đầy đủ năng lực hợp pháp do xã hội quy định, và biểu lộ một cách công khai."},{"id":"B","text":"Được thực hiện bởi một người nam và một người nữ, với tất cả sự ưng thuận của đôi bên và được biểu lộ một cách hợp thức."},{"id":"C","text":"Được thực hiện bởi người có năng lực pháp lý, với sự ưng thuận của đôi bên, và được biểu lộ một cách hợp thức."},{"id":"D","text":"Được thực hiện bởi những người có năng lực theo những quy chuẩn do xã hội và Giáo hội quy định theo định chế của đôi bên."}],"correctAnswer":"C"},{"id":"q-041","type":"single_choice","content":"Người có năng lực pháp lý là người thế nào?","options":[{"id":"A","text":"Người được xã hội chứng thực là công dân hợp pháp với đầy đủ quyền lợi và nghĩa vụ của họ."},{"id":"B","text":"Người đủ trí khôn, có khả năng quyết định hành vi kết hôn của mình theo nguyên tắc của xã hội."},{"id":"C","text":"Người có đầy đủ trí năng để thực hiện hành vi của mình một cách có ý thức."},{"id":"D","text":"Người được giáo luật công nhận có đủ khả năng và tư cách kết hôn."}],"correctAnswer":"D"},{"id":"q-042","type":"single_choice","content":"Sự ưng thuận phải được thể hiện như thế nào?","options":[{"id":"A","text":"Dưới ảnh hưởng trào lưu của xã hội."},{"id":"B","text":"Theo sự sắp xếp của xã hội và Giáo hội."},{"id":"C","text":"Theo ước muốn một cách không bị ràng buộc của các đương sự."},{"id":"D","text":"Trong sự sáng suốt của lý trí và ý muốn tự do."}],"correctAnswer":"D"},{"id":"q-043","type":"single_choice","content":"Khi nào thì sự ưng thuận bị khiếm khuyết (hà tỳ)?","options":[{"id":"A","text":"Thiếu sự sáng suốt của lý trí, hay không được tự do."},{"id":"B","text":"Thiếu năng lực phán đoán hành vi đưa ra sự ưng thuận."},{"id":"C","text":"Chấp nhận sự ưng thuận trong tình trạng thiếu tự do."},{"id":"D","text":"Không đủ khả năng đưa ra sự ưng thuận."}],"correctAnswer":"A"},{"id":"q-044","type":"single_choice","content":"Sự ưng thuận phải được biểu lộ hợp thức nghĩa là gì?","options":[{"id":"A","text":"Theo những nghi thức mà luật hay lệ quy định."},{"id":"B","text":"Theo cách thế mà đôi bạn và gia đình mong muốn."},{"id":"C","text":"Theo thể lệ xã hội quy định phù hợp với truyền thống Giáo hội."},{"id":"D","text":"Theo những hình thức gia đình và xã hội ước lệ."}],"correctAnswer":"A"},{"id":"q-045","type":"single_choice","content":"Trong hôn nhân Công giáo, sự ưng thuận được cử hành thế nào?","options":[{"id":"A","text":"Theo cách thức người chủ sự cử hành."},{"id":"B","text":"Theo phong tục gia đình và xã hội."},{"id":"C","text":"Theo truyền thống xã hội địa phương."},{"id":"D","text":"Theo thể thức được Giáo hội quy định."}],"correctAnswer":"D"},{"id":"q-046","type":"single_choice","content":"Cho biết những nguyên nhân làm cho hôn nhân vô hiệu?","options":[{"id":"A","text":"Mắc những ngăn trở tiêu hôn."},{"id":"B","text":"Sự ưng thuận bị khiếm khuyết (bị hà tỳ)."},{"id":"C","text":"Thiếu thể thức Giáo hội."},{"id":"D","text":"Bao gồm cả ba điều trên."}],"correctAnswer":"D"},{"id":"q-047","type":"single_choice","content":"Có bao nhiêu ngăn trở tiêu hôn?","options":[{"id":"A","text":"11"},{"id":"B","text":"12"},{"id":"C","text":"13"},{"id":"D","text":"14"}],"correctAnswer":"B"},{"id":"q-048","type":"single_choice","content":"Cho biết những ngăn trở theo luật tự nhiên?","options":[{"id":"A","text":"Bất lực, đã kết hôn, khác tôn giáo, có chức thánh."},{"id":"B","text":"Bất lực, đã kết hôn, có họ máu hai bậc hàng ngang, họ kết bạn."},{"id":"C","text":"Bất lực, có họ máu hàng dọc, khác tôn giáo, họ kết bạn."},{"id":"D","text":"Bất lực, đã kết hôn, có họ máu hàng dọc, họ máu hai bậc hàng ngang."}],"correctAnswer":"D"},{"id":"q-049","type":"single_choice","content":"Cho biết những ngăn trở theo luật Hội thánh?","options":[{"id":"A","text":"Không đủ tuổi, họ máu ba bậc hàng ngang."},{"id":"B","text":"Họ kết bạn, tội mưu sát phối ngẫu, chức thánh, lời khấn, công hạnh, khác tôn giáo."},{"id":"C","text":"Tất cả các ngăn trở trên."}],"correctAnswer":"C"},{"id":"q-050","type":"single_choice","content":"Chuẩn ngăn trở hôn phối trong đạo Công giáo là gì?","options":[{"id":"A","text":"Bản quyền địa phương cho phép đôi bạn, dù bị ngăn trở, được kết hôn."},{"id":"B","text":"Đôi bạn được quyền kết hôn mà không cần cử hành bí tích."},{"id":"C","text":"Bản quyền địa phương ra quyết định về những trường hợp được quyền kết hôn."},{"id":"D","text":"Đôi bạn được cử hành bí tích hôn nhân mà không cần đăng ký kết hôn dân sự."}],"correctAnswer":"A"},{"id":"q-051","type":"single_choice","content":"Giáo hội không được quyền miễn chuẩn những ngăn trở nào?","options":[{"id":"A","text":"Ngăn trở thuộc luật tự nhiên."},{"id":"B","text":"Ngăn trở thuộc luật Hội thánh."},{"id":"C","text":"Ngăn trở theo truyền thống dân tộc."},{"id":"D","text":"Ngăn trở khác đạo."}],"correctAnswer":"A"},{"id":"q-052","type":"single_choice","content":"Tình yêu vợ chồng có những đặc tính gì?","options":[{"id":"A","text":"Hy sinh tất cả cho nhau, cả hai nên một trong thân xác và cả tinh thần."},{"id":"B","text":"Sống chung trọn đời, chấp nhận nhau, đón nhận con cái và bảo đảm đời sống kinh tế gia đình."},{"id":"C","text":"Kết hợp nên một, trao hiến trọn vẹn, chung thủy trọn đời và đón nhận con cái."},{"id":"D","text":"Nên một trong mọi sự, đón nhận con cái, cùng nhau xây dựng và bảo vệ hạnh phúc gia đình."}],"correctAnswer":"C"},{"id":"q-053","type":"single_choice","content":"Thế nào là tình yêu trọn vẹn?","options":[{"id":"A","text":"Là biết trân trọng giá trị điều bạn chọn lựa."},{"id":"B","text":"Là tình cảm thuần khiết và trong sáng, xuất phát từ trái tim, từ tâm hồn."},{"id":"C","text":"Là dành tất cả những điều đẹp đẽ nhất, chân thành nhất cho bạn đời mình."},{"id":"D","text":"Tất cả những điều trên."}],"correctAnswer":"D"},{"id":"q-054","type":"single_choice","content":"Đâu là cách thức vợ chồng thể hiện tình yêu trọn vẹn?","options":[{"id":"A","text":"Vợ chồng cùng nhau hướng đến những giá trị cao đẹp, xây dựng gia đình trong tình thương hướng đến việc trao thân gửi phận cho nhau."},{"id":"B","text":"Vợ chồng cùng xây dựng một gia đình lý tưởng như lòng mình mong muốn, theo những chuẩn mực xã hội mang lại."},{"id":"C","text":"Vợ chồng đón nhận con người thực với khả năng và giới hạn của nhau, đồng thời hiến thân cho nhau một cách vô điều kiện."},{"id":"D","text":"Vợ chồng dám đón nhận nhau một cách vô điều kiện, để cùng nắm tay nhau vượt qua những khó khăn trong cuộc sống."}],"correctAnswer":"C"},{"id":"q-055","type":"single_choice","content":"Sự kết hợp vợ chồng mà thiếu tình yêu chân thành và sự dâng hiến đến cùng, sẽ mang đến hậu quả gì?","options":[{"id":"A","text":"Dễ đổ vỡ và đưa tới những hậu quả thảm hại."},{"id":"B","text":"Đánh mất hạnh phúc đích thực trong đời sống gia đình."},{"id":"C","text":"Nguy cơ tan vỡ, vợ chồng đưa nhau ra tòa li dị."},{"id":"D","text":"Làm cho gia đình không còn là tổ ấm, mà là tù ngục giam giữ nhau."}],"correctAnswer":"A"},{"id":"q-056","type":"single_choice","content":"Theo thánh Phaolô, thế nào là tình yêu trọn vẹn?","options":[{"id":"A","text":"Là tình yêu sống chung thủy với nhau trọn đời dẫu gặp phải những khó khăn trong cuộc sống."},{"id":"B","text":"Là tình yêu đón nhận nhau với tất cả mọi điều tốt xấu của nhau, để cùng nhau xây dựng gia đình."},{"id":"C","text":"Là tình yêu có khả năng chịu đựng tất cả, tha thứ tất cả, tin tưởng tất cả và hy vọng tất cả."},{"id":"D","text":"Là tình yêu có khả năng chịu đựng tất cả với niềm tin tưởng tuyệt đối và hy sinh cho nhau."}],"correctAnswer":"C"},{"id":"q-057","type":"single_choice","content":"Theo Đức Giáo hoàng Phanxicô, thế nào là tình yêu có khả năng chịu đựng tất cả?","options":[{"id":"A","text":"Là tình yêu có sức mạnh chiến thắng sự dữ và oán hận, để yêu thương bất chấp mọi sự."},{"id":"B","text":"Là tình yêu có sức mạnh hoán cải người bạn đời ngày một trở nên tốt đẹp hơn."},{"id":"C","text":"Là tình yêu có khả năng mang đến sự bình yên cho gia đình, bảo vệ hạnh phúc cho bạn đời."},{"id":"D","text":"Là tình yêu mang đến hạnh phúc đích thực dẫu gặp phải những khốn khó trong cuộc sống."}],"correctAnswer":"A"},{"id":"q-058","type":"single_choice","content":"Theo Đức Giáo hoàng Phanxicô, tha thứ tất cả nghĩa là gì?","options":[{"id":"A","text":"Đón nhận sự khác biệt, bổ túc cho nhau, bảo vệ bình an gia đình."},{"id":"B","text":"Tha thứ một cách vô điều kiện dẫu gặp phải những thua thiệt nhất định."},{"id":"C","text":"Chấp nhận sự bất toàn của nhau, biết bảo vệ thanh danh cho nhau."},{"id":"D","text":"Tha thứ trong chừng mực, cùng nhau tìm sự thật, giúp bảo vệ gia đình."}],"correctAnswer":"C"},{"id":"q-059","type":"single_choice","content":"Theo Đức Giáo hoàng Phanxicô, tin tưởng tất cả là gì?","options":[{"id":"A","text":"Tin vào ánh sáng mà Thiên Chúa đã thắp lên nơi người bạn đời."},{"id":"B","text":"Tin vào khả năng hướng thiện nơi người bạn đời của mình."},{"id":"C","text":"Tin vào khả năng mình có thể thay đổi bạn đời sống đúng với sự thật, chân lý."},{"id":"D","text":"Tin vào đạo lý Giáo hội có khả năng mang đến hạnh phúc cho gia đình."}],"correctAnswer":"A"},{"id":"q-060","type":"single_choice","content":"Theo Đức Giáo hoàng, hy vọng tất cả là gì?","options":[{"id":"A","text":"Hy vọng vào sự tất thắng của điều lành trên điều dữ nhờ quyền năng và ơn trợ giúp của Đức Kitô Phục Sinh."},{"id":"B","text":"Hy vọng rằng Đức Kitô Phục Sinh sẽ mang đến hạnh phúc và bình an cho những ai lấy đạo lý của Ngài làm kim chỉ nam cho đời."},{"id":"C","text":"Hy vọng niềm tin Kitô giáo sẽ là giải pháp hữu hiệu cho mọi khó khăn trong đời sống hôn nhân gia đình Công giáo."},{"id":"D","text":"Hy vọng vào sức mạnh niềm tin Kitô giáo sẽ là chỗ dựa vững chắc cho đôi bạn tìm được tiếng nói chung về đời sống hôn nhân gia đình."}],"correctAnswer":"A"},{"id":"q-061","type":"single_choice","content":"Tình yêu trọn vẹn đòi hỏi hai vợ chồng điều gì?","options":[{"id":"A","text":"Kiên tâm chịu đựng với ý thức điều tốt lành sẽ đến cho những ai sống cho tình yêu chân thực từ trong suy nghĩ cho đến hành vi."},{"id":"B","text":"Kết hợp với toàn thể con người và cuộc sống của nhau, trên bình diện thể lý, tinh thần trong suy nghĩ cũng như lời nói và việc làm."},{"id":"C","text":"Kết hợp toàn vẹn con người mình từ trong thân xác đến những ước muốn và hành vi để cùng nhau hướng đến hạnh phúc cho gia đình."},{"id":"D","text":"Suy nghĩ tích cực về con người bạn đời và luôn hành động hướng đến hạnh phúc đích thật như Chúa muốn cho gia đình mình."}],"correctAnswer":"B"},{"id":"q-062","type":"single_choice","content":"Để cho tình yêu vợ chồng trở thành ân sâu nghĩa nặng, vợ chồng phải sống thế nào?","options":[{"id":"A","text":"Tôn trọng, hy sinh, chia sẻ gánh nặng gia đình, biết chu toàn bổn phận vợ chồng và cùng nhau cầu nguyện cho gia đình mình."},{"id":"B","text":"Tôn trọng, hy sinh, đối thoại, dành thời giờ, nói lời dịu dàng, chu toàn bổn phận và cầu nguyện với nhau cho nhau."},{"id":"C","text":"Hy sinh, chấp nhận nhau ngay cả những bất toàn trong sự tôn trọng tuyệt đối, để cùng nhau hướng đến sự bình an cho gia đình."},{"id":"D","text":"Hy sinh, cùng nhau gánh vác bổn phận trách nhiệm vợ chồng và kết hiệp với nhau trong đời sống thiêng liêng."}],"correctAnswer":"B"},{"id":"q-063","type":"single_choice","content":"Theo nghĩa hẹp, thế nào là trung thành trong hôn nhân?","options":[{"id":"A","text":"Tin tưởng vào tình yêu chung thủy của bạn đời."},{"id":"B","text":"Giữ trọn lời cam kết, không phản bội, gắn bó với nhau suốt đời."},{"id":"C","text":"Không công khai phản bội lời cam kết mà hai người đã thề hứa."},{"id":"D","text":"Gắn bó với nhau suốt đời."}],"correctAnswer":"B"},{"id":"q-064","type":"single_choice","content":"Theo nghĩa sâu xa, thế nào là trung thành trong đời sống hôn nhân?","options":[{"id":"A","text":"Dành cho nhau không gian riêng tư."},{"id":"B","text":"Chấp nhận nhau một cách vô điều kiện."},{"id":"C","text":"Tôn trọng nhau một cách chân thành."},{"id":"D","text":"Khả năng chọn lựa nhau mỗi ngày."}],"correctAnswer":"D"},{"id":"q-065","type":"single_choice","content":"Để có thể trung thành trong đời sống vợ chồng, đôi bạn cần làm điều gì?","options":[{"id":"A","text":"Luôn quan tâm và chia sẻ trách nhiệm, bổn phận cho nhau."},{"id":"B","text":"Luôn ý thức trách nhiệm, bổn phận của mình."},{"id":"C","text":"Luôn coi trọng gia đình lên trên mọi tham vọng bản thân."},{"id":"D","text":"Luôn khám phá lại và làm cho tình yêu luôn mới."}],"correctAnswer":"D"},{"id":"q-066","type":"single_choice","content":"Đâu là gương sáng của tình yêu vợ chồng?","options":[{"id":"A","text":"Sự kết hợp giữa Đức Kitô và Hội Thánh."},{"id":"B","text":"Tình yêu của Thánh Cả Giuse dành cho Đức Maria."},{"id":"C","text":"Tình yêu của Ba Ngôi Thiên Chúa."},{"id":"D","text":"Sự liên đới giữa giáo huấn Thiên Chúa và Hội thánh trần thế."}],"correctAnswer":"A"},{"id":"q-067","type":"single_choice","content":"Theo thánh Phaolô, người chồng phải yêu thương vợ như thế nào?","options":[{"id":"A","text":"Yêu thương như chính Đức Kitô yêu thương và hiến mình vì Hội thánh."},{"id":"B","text":"Yêu thương hết khả năng, sức lực và trí tuệ của mình."},{"id":"C","text":"Yêu thương vợ mình như yêu chính bản thân mình."},{"id":"D","text":"Yêu thương với tất cả khả năng, sức lực và cả con người mình."}],"correctAnswer":"A"},{"id":"q-068","type":"single_choice","content":"Đức Kitô yêu thương và hiến mình vì Hội thánh để làm gì?","options":[{"id":"A","text":"Để cho Ngài được vinh quang."},{"id":"B","text":"Để con cái Hội thánh được thánh thiện."},{"id":"C","text":"Để thánh hóa Hội thánh."},{"id":"D","text":"Để cho Hội thánh công chính ngay từ bây giờ."}],"correctAnswer":"C"},{"id":"q-069","type":"single_choice","content":"Để có thể yêu thương nhau như Đức Kitô yêu thương Hội Thánh, hai vợ chồng phải làm gì?","options":[{"id":"A","text":"Tôn trọng đời sống riêng tư của nhau, giúp nhau ngày thăng tiến, đồng thời chấp nhận những khác biệt, ngay cả những bất toàn của nhau."},{"id":"B","text":"Yêu thương, tôn trọng, đón nhận với niềm tin Thiên Chúa luôn đồng hành và bảo vệ hạnh phúc, bình an của gia đình."},{"id":"C","text":"Yêu thương, gắn bó suốt đời với nhau, đồng thời chữa lành và tạo điều kiện cho nhau trở nên công chính và thánh thiện hơn."},{"id":"D","text":"Tôn trọng nhau một cách vô điều kiện, chấp nhận những khác biệt với niềm tin vào sức mạnh Thiên Chúa sẽ chữa lành và giúp nhau cùng thăng tiến."}],"correctAnswer":"C"},{"id":"q-070","type":"single_choice","content":"Theo Đức Giáo hoàng Phanxicô, lòng trung thành của hai vợ chồng thường bị đe dọa bởi nguy cơ nào?","options":[{"id":"A","text":"Tình yêu ích kỷ, yêu mình thái quá, chỉ nhìn thấy nhu cầu của bản thân."},{"id":"B","text":"Trào lưu hưởng thụ của xã hội, với những nguy cơ làm rạn nứt tình yêu vợ chồng."},{"id":"C","text":"Tham vọng của bản thân, không quan tâm đến người bạn đời."},{"id":"D","text":"Những khó khăn trong đời sống kinh tế, tinh thần của gia đình."}],"correctAnswer":"A"},{"id":"q-071","type":"single_choice","content":"Điều kiện căn bản để đôi bạn nam nữ có thể kết hôn là gì?","options":[{"id":"A","text":"Đã học giáo lý hôn nhân và cả hai đều độc thân."},{"id":"B","text":"Sau khi đã tìm hiểu nhau kỹ lưỡng và gia đình hai bên chấp thuận."},{"id":"C","text":"Ưng thuận nhau trong tự do và trách nhiệm."},{"id":"D","text":"Sự đồng thuận quyết định đi tới hôn nhân của đôi bạn nam nữ."}],"correctAnswer":"C"},{"id":"q-072","type":"single_choice","content":"Trường hợp nào là không đủ tự do để kết hôn?","options":[{"id":"A","text":"Chưa đủ tuổi kết hôn, chưa được sự công nhận của xã hội Giáo hội."},{"id":"B","text":"Đang còn sống lệ thuộc về kinh tế, chưa sống tự lập."},{"id":"C","text":"Bị ép buộc, đã kết hôn hoặc khấn trọn mà chưa tháo gỡ."},{"id":"D","text":"Bị ép buộc kết hôn với mục đích kinh tế, xã hội."}],"correctAnswer":"C"},{"id":"q-073","type":"single_choice","content":"Theo Thánh Phaolô, chúng ta được mời gọi để sống sự tự do như thế nào?","options":[{"id":"A","text":"Tự do từ bỏ mình, vác thập giá mình mà theo Chúa trên con đường yêu thương và phục vụ."},{"id":"B","text":"Tự do sống theo sự xác tín bản thân, để xây dựng đời sống gia đình theo ý hướng bản thân."},{"id":"C","text":"Tự do chọn lựa những cách thức theo trào lưu xã hội hội, để vợ chồng có chung chí hướng."},{"id":"D","text":"Tự do sống và theo đuổi những mục đích mà cả hai vợ chồng cùng nhắm đến cho lợi ích gia đình."}],"correctAnswer":"A"},{"id":"q-074","type":"single_choice","content":"Để có được sự tự do trong đời sống hôn nhân, đôi bạn nam nữ phải làm gì?","options":[{"id":"A","text":"Giải thoát mình khỏi những ràng buộc cá nhân với gia đình."},{"id":"B","text":"Giải thoát mình khỏi những tình cảm không còn phù hợp."},{"id":"C","text":"Thật lòng yêu thương và nỗ lực vượt qua trở ngại trong tình yêu."},{"id":"D","text":"Giải thoát mình khỏi nô lệ của tội lỗi và dục vọng."}],"correctAnswer":"D"},{"id":"q-075","type":"single_choice","content":"Hoa trái tình yêu vợ chồng là gì?","options":[{"id":"A","text":"Con cái là hoa trái đầu tiên của tình yêu."},{"id":"B","text":"Con cái và thiện ích con cái mang lại."},{"id":"C","text":"Thiện ích dòng họ hai bên và con cái."},{"id":"D","text":"Thiện ích của vợ chồng và con cái."}],"correctAnswer":"D"},{"id":"q-076","type":"single_choice","content":"Theo giáo huấn Hội thánh, yếu tố căn bản của việc làm cha làm mẹ có trách nhiệm là gì?","options":[{"id":"A","text":"Sự phán đoán chín chắn của lương tâm cá nhân trong mối quan hệ với luật Chúa."},{"id":"B","text":"Sự phán đoán khôn ngoan của một lương tâm ngay chính."},{"id":"C","text":"Sự phân định rõ ràng, mạch lạc của lý trí minh mẫn và khôn ngoan."},{"id":"D","text":"Sự trung thành tuân giữ luật Chúa phù hợp với khả năng và lợi ích của gia đình."}],"correctAnswer":"B"},{"id":"q-077","type":"single_choice","content":"Luân lý tính dục trong đời sống hôn nhân là gì?","options":[{"id":"A","text":"Giáo huấn của Giáo Hội, giúp vợ chồng sống xứng đáng với ơn gọi."},{"id":"B","text":"Những điều răn và giới luật, giúp vợ chồng sống đúng với giáo huấn Giáo Hội."},{"id":"C","text":"Tính hợp pháp do chính giáo huấn Giáo hội thiết lập cho đời sống vợ chồng."},{"id":"D","text":"Tính cách hợp pháp do chính Thiên Chúa thiết lập cho đời sống vợ chồng."}],"correctAnswer":"A"},{"id":"q-078","type":"single_choice","content":"Sinh sản có trách nhiệm là gì?","options":[{"id":"A","text":"Vợ chồng biết sử dụng những phương thế ngừa thai của Giáo hội."},{"id":"B","text":"Vợ chồng quyết định đúng đắn và phù hợp trong việc sinh con."},{"id":"C","text":"Vợ chồng có trách nhiệm nuôi dưỡng và giáo dục con cái."},{"id":"D","text":"Vợ chồng biết cách giáo dục con cái nên người."}],"correctAnswer":"B"},{"id":"q-079","type":"single_choice","content":"Vợ chồng cần nhận thức về nhiệm vụ sinh sản như thế nào?","options":[{"id":"A","text":"Cộng tác vào công trình sáng tạo của Thiên Chúa."},{"id":"B","text":"Xây dựng thế hệ thừa kế cho Giáo Hội."},{"id":"C","text":"Có người chăm sóc khi về già."},{"id":"D","text":"Duy trì nòi giống cho xã hội và Giáo hội."}],"correctAnswer":"A"},{"id":"q-080","type":"single_choice","content":"Tại sao Hội thánh cấm các phương pháp ngừa thai nhân tạo?","options":[{"id":"A","text":"Làm mất phẩm giá hôn nhân."},{"id":"B","text":"Trực tiếp vi phạm đến sự sống."},{"id":"C","text":"Bảo vệ hạnh phúc đời hôn nhân."},{"id":"D","text":"Ảnh hưởng đến sức khỏe của con người."}],"correctAnswer":"B"},{"id":"q-081","type":"single_choice","content":"Để sinh sản có trách nhiệm, vợ chồng Kitô hữu có thái độ nào?","options":[{"id":"A","text":"Làm chủ bản năng, tôn trọng nhau, thẩm định khả năng, dùng phương pháp tự nhiên, sẵn sàng đón nhận con cái."},{"id":"B","text":"Cố gắng đáp ứng nhu cầu sinh lý vợ chồng, tôn trọng nhau và thẩm định khả năng sinh và nuôi dưỡng con cái."},{"id":"C","text":"Chạy theo xu hướng đời sống tình dục, vì xã hội ngày nay rất tiến bộ, có nhiều biện pháp để hạn chế việc sinh con."},{"id":"D","text":"Sử dụng những phương pháp điều hòa sinh sản mà y học hiện đại phát minh ra."}],"correctAnswer":"A"},{"id":"q-082","type":"single_choice","content":"Để có quyết định đúng đắn về việc điều hòa sinh sản, đôi bạn phải có những yếu tố nào?","options":[{"id":"A","text":"Lương tâm ngay thẳng và tinh thần trách nhiệm cao trong việc bảo vệ bình an cho gia đình."},{"id":"B","text":"Tinh thần trách nhiệm cao và tuân giữ giáo huấn của Hội Thánh về việc điều hòa sinh sản."},{"id":"C","text":"Lương tâm ngay thẳng, chân chính, và tuân giữ giáo huấn của Hội Thánh."},{"id":"D","text":"Tuân giữ giáo huấn của Hội thánh, nhằm bảo vệ đạo lý tôn trọng sự sống con người."}],"correctAnswer":"C"},{"id":"q-083","type":"single_choice","content":"Ngoài việc đúng với ý định của Thiên Chúa, sinh sản có trách nhiệm còn được đánh giá là hành vi gì?","options":[{"id":"A","text":"Đáp ứng nhu cầu xã hội và Giáo hội, mang lại bình an và thịnh vượng cho gia đình."},{"id":"B","text":"Đáp ứng đòi hỏi tình yêu vợ chồng và đem lại lợi ích cho gia đình, xã hội và Giáo hội."},{"id":"C","text":"Chu toàn bổn phận làm cha mẹ và phù hợp với xu hướng chung của thời đại."},{"id":"D","text":"Nâng cao mức sống gia đình, và đáp ứng những đòi hỏi của xã hội."}],"correctAnswer":"B"},{"id":"q-084","type":"single_choice","content":"Phải tôn trọng sự sống khi nào?","options":[{"id":"A","text":"Ngay từ lúc hình thành bào thai."},{"id":"B","text":"Từ lúc khẳng định đã chắc chắn có phôi thai."},{"id":"C","text":"Từ khi có thể đo được tim thai."},{"id":"D","text":"Khi bào thai đã phát triển hoàn thiện các bộ phận của cơ thể."}],"correctAnswer":"A"},{"id":"q-085","type":"single_choice","content":"Vì sao vợ chồng có trách nhiệm thông truyền tình yêu và sự sống cho nhau và cho con cái?","options":[{"id":"A","text":"Vì chính họ đã lãnh nhận tình yêu và sự sống từ Thiên Chúa tạo dựng và cứu độ."},{"id":"B","text":"Vì chính họ có trách nhiệm trước mặt Thiên Chúa về việc bảo toàn nòi giống."},{"id":"C","text":"Vì chính họ đã lãnh nhận nhiệm vụ bảo toàn nòi giống đối với dòng tộc và xã hội."},{"id":"D","text":"Vì chính họ là công cụ Thiên Chúa sử dụng để bảo toàn nòi giống cho nhân loại."}],"correctAnswer":"A"},{"id":"q-086","type":"single_choice","content":"Vì sao trong trường hợp vô sinh, đời sống hôn nhân của hai vợ chồng vẫn không vô nghĩa?","options":[{"id":"A","text":"Vì hoa trái đầu tiên của tình yêu vợ chồng là sự thiện ích vợ chồng đem lại cho nhau."},{"id":"B","text":"Vì hạnh phúc trong đời sống hôn nhân gia đình không phải nhất định từ phía con cái mang lại."},{"id":"C","text":"Vì con cái là hoa trái đầu tiên của tình yêu vợ chồng đem lại trong đời sống hôn nhân gia đình."},{"id":"D","text":"Vì ý nghĩa của đời sống hôn nhân gia đình không nhất định phải có sự hiện diện của con cái."}],"correctAnswer":"A"},{"id":"q-087","type":"single_choice","content":"Vì sao hai vợ chồng phải chu toàn bổn phận sinh sản và giáo dục con cái trong tinh thần trách nhiệm?","options":[{"id":"A","text":"Vì có như vậy con cái mới có thể được lớn lên và trưởng thành trong ơn nghĩa Chúa."},{"id":"B","text":"Vì chính đôi vợ chồng đã được Thiên Chúa tạo dựng và cứu độ."},{"id":"C","text":"Vì đó chính là ơn gọi mà Thiên Chúa đặt để ngay trong bản chất của bí tích hôn nhân."},{"id":"D","text":"Vì Thiên Chúa mời gọi vợ chồng cộng tác trong công trình tạo dựng và cứu độ."}],"correctAnswer":"D"},{"id":"q-088","type":"single_choice","content":"Để chu toàn bổn phận sinh sản con cái trong tinh thần trách nhiệm, vợ chồng phải làm gì?","options":[{"id":"A","text":"Tùy theo khả năng tài chính, vợ chồng cần cân nhắc về số con cái trong gia đình."},{"id":"B","text":"Con cái là hồng ân của Chúa, sanh càng nhiều càng tốt."},{"id":"C","text":"Quyết định số con cái sao cho phù hợp với nhu cầu và ước muốn của vợ chồng."},{"id":"D","text":"Dựa trên lương tâm ngay lành, vợ chồng cân nhắc và quyết định số con cái."}],"correctAnswer":"D"},{"id":"q-089","type":"single_choice","content":"Phương pháp rụng trứng Billings là gì?","options":[{"id":"A","text":"Công cụ giúp vợ chồng sống đời tình dục một cách sung mãn."},{"id":"B","text":"Cách nhận ra dấu hiệu tự nhiên của khả năng thụ thai."},{"id":"C","text":"Cách nhận biết quá trình hình thành và lớn lên của một thai nhi."},{"id":"D","text":"Cách nhận ra dấu hiệu bất thường của thai nhi để chữa trị."}],"correctAnswer":"B"},{"id":"q-090","type":"single_choice","content":"Mục đích của phương pháp Billings?","options":[{"id":"A","text":"Giúp vợ chồng bảo vệ thai nhi một cách tốt nhất có thể."},{"id":"B","text":"Bảo vệ bà mẹ và trẻ em trong giai đoạn đầu thời kỳ thai nhi."},{"id":"C","text":"Giúp vợ chồng có con hay trì hoãn, và theo dõi sức khỏe sinh sản."},{"id":"D","text":"Hướng dẫn vợ chồng biết cách sống đời vợ chồng một cách sung mãn."}],"correctAnswer":"C"},{"id":"q-091","type":"single_choice","content":"Tại sao Giáo hội chỉ cho phép sử dụng phương pháp Billings trong đời sống hôn nhân gia đình?","options":[{"id":"A","text":"Giúp vợ chồng có được sự sung mãn trong đời sống tình dục."},{"id":"B","text":"Thuận theo quy luật tự nhiên mà Thiên Chúa đã sắp đặt."},{"id":"C","text":"Phù hợp với trào lưu xã hội, giúp gắn kết hơn trong đời sống vợ chồng."},{"id":"D","text":"Dễ thành công trong việc trì hoãn thời kỳ mang thai."}],"correctAnswer":"B"},{"id":"q-092","type":"single_choice","content":"Quy trình chính của phương pháp tránh thai tự nhiên Billings là gì?","options":[{"id":"A","text":"Quan sát các biểu hiện dịch âm đạo."},{"id":"B","text":"Kiểm tra nhiệt độ cơ thể."},{"id":"C","text":"Sử dụng bảng tính chu kỳ kinh nguyệt."},{"id":"D","text":"Đo lường hướng dẫn về việc sử dụng bảo vệ bên ngoài."}],"correctAnswer":"A"},{"id":"q-093","type":"single_choice","content":"Trong phương pháp Billings, điều gì được sử dụng để xác định thời điểm rụng trứng?","options":[{"id":"A","text":"Kiểm tra nhiệt độ cơ thể."},{"id":"B","text":"Quan sát màu sắc của dịch âm đạo."},{"id":"C","text":"Kiểm tra sự thay đổi độ ẩm của dịch âm đạo."},{"id":"D","text":"Cả a, b và c."}],"correctAnswer":"C"},{"id":"q-094","type":"single_choice","content":"Thời gian nào trong chu kỳ kinh nguyệt được coi là thời điểm an toàn nhất để tránh thai trong phương pháp Billings?","options":[{"id":"A","text":"Trước khi bắt đầu kinh nguyệt."},{"id":"B","text":"Khi dịch âm đạo trở nên sệt và có màu đặc."},{"id":"C","text":"Sau khi rụng trứng 4 ngày."},{"id":"D","text":"Trong thời gian rụng trứng."}],"correctAnswer":"C"},{"id":"q-095","type":"single_choice","content":"Trong phương pháp Billings, điều gì có thể ảnh hưởng đến tính chính xác của việc quan sát và ghi chép các biểu hiện tự nhiên của cơ thể?","options":[{"id":"A","text":"Stress và căng thẳng."},{"id":"B","text":"Thuốc kháng sinh."},{"id":"C","text":"Sự thay đổi vùng địa lý."},{"id":"D","text":"Tất cả a, b và c."}],"correctAnswer":"D"},{"id":"q-096","type":"single_choice","content":"Trong phương pháp Billings, dịch âm đạo thường trở nên thế nào trước khi rụng trứng?","options":[{"id":"A","text":"Sệt và có màu trắng sữa hoặc trong suốt."},{"id":"B","text":"Dày và có màu vàng."},{"id":"C","text":"Đặc và có màu hồng nhạt."},{"id":"D","text":"Thường không có sự thay đổi đáng kể."}],"correctAnswer":"A"},{"id":"q-097","type":"single_choice","content":"Hạnh phúc gia đình là do chính vợ chồng định đoạt, không có gì là chân lý, mọi sự đều có thể và được phép?","options":[{"id":"A","text":"Đúng."},{"id":"B","text":"Sai."}],"correctAnswer":"B"},{"id":"q-098","type":"single_choice","content":"Hôn nhân Công giáo có những đặc tính nào?","options":[{"id":"A","text":"Tự do và công khai kết ước."},{"id":"B","text":"Một vợ, một chồng, không ly dị."},{"id":"C","text":"Đơn hôn và vĩnh hôn."},{"id":"D","text":"Chung thủy trọn đời, không ly thân."}],"correctAnswer":"C"},{"id":"q-099","type":"single_choice","content":"Để bí tích Hôn nhân thành sự, hai người nam nữ cần có những điều kiện nào?","options":[{"id":"A","text":"Đã được rửa tội, tự do kết hôn, công khai bày tỏ sự ưng thuận kết hôn và cùng cử hành bí tích Hôn phối theo thể thức Hội thánh."},{"id":"B","text":"Đã được rửa tội, tự nguyện kết hôn với sự đồng ý của gia đình hai họ và bày tỏ sự ưng thuận qua việc cử hành theo thể thức Hội thánh."},{"id":"C","text":"Đã được rửa tội, không bị ngăn trở bởi luật đời cũng như luật đạo, công khai bày tỏ sự ưng thuận trước sự chứng hôn của đấng bản quyền."},{"id":"D","text":"Đã được rửa tội, bày tỏ sự ưng thuận một cách công khai và được đấng bản quyền cử hành nghi thức theo thể thức Hội thánh qui định."}],"correctAnswer":"A"},{"id":"q-100","type":"single_choice","content":"Bí tích Hôn phối đem lại những hiệu quả nào?","options":[{"id":"A","text":"Gắn kết hai người nên một, và qua đó thiết lập nên một tương quan đời sống mới, đời sống hôn nhân gia đình được Giáo hội công nhận."},{"id":"B","text":"Giúp họ công khai sống đời hôn nhân gia đình, được xã hội và Giáo hội công nhận."},{"id":"C","text":"Làm nên mối dây liên kết người nam và người nữ nên một và ban ơn giúp họ yêu thương và trung thành với nhau."},{"id":"D","text":"Mang lại những ơn ích, giúp cho hai vợ chồng có được sức mạnh, sự khôn ngoan, và trợ lực thiêng liêng để sống trung thành với nhau."}],"correctAnswer":"C"},{"id":"q-101","type":"single_choice","content":"Bí tích Hôn phối ban cho hai vợ chồng những ơn ích nào?","options":[{"id":"A","text":"Trợ lực giúp yêu thương nhau, kiện toàn tình yêu tự nhiên, củng cố sự hiệp nhất bất khả phân ly và thánh hóa đời sống siêu nhiên."},{"id":"B","text":"Liên kết hai người một cách chặt chẽ để bảo vệ tình yêu, giúp họ sống đời sống gia đình thuận hòa, hạnh phúc với con cái và họ hàng hai bên."},{"id":"C","text":"Thăng tiến đời sống đạo và củng cố sự hiệp nhất giữa mọi thành viên trong gia đình, dòng tộc và cộng đoàn đức tin."},{"id":"D","text":"Nâng đỡ, thánh hóa đời sống tinh thần và bảo vệ hạnh phúc cho mọi thành viên trong gia đình."}],"correctAnswer":"A"},{"id":"q-102","type":"single_choice","content":"Theo truyền thống, việc cưới hỏi người Việt Nam bao gồm những nghi lễ gì?","options":[{"id":"A","text":"Lễ dạm (chạm ngõ), lễ đính hôn (đám hỏi), lễ vu quy (bên cô dâu) và lễ tân hôn (bên chú rể)."},{"id":"B","text":"Lễ dạm hỏi, lễ cưới (trong nhà thờ), lễ đưa dâu (rước dâu), và lễ tân hôn (bên chú rể)."},{"id":"C","text":"Lễ đính hôn (đám hỏi), lễ vu quy (bên cô dâu), lễ cưới (tại nhà thờ), và lễ tân hôn (bên chú rể)."},{"id":"D","text":"Lễ dạm (chạm ngõ), lễ đăng ký kết hôn dân sự, lễ cưới (tại nhà thờ), và lễ đưa dâu."}],"correctAnswer":"A"},{"id":"q-103","type":"single_choice","content":"Vì sao đôi bạn Công giáo còn phải cử hành hôn lễ theo nghi thức hôn phối của Hội thánh?","options":[{"id":"A","text":"Nghi thức Hôn phối mà Hội thánh qui định là yếu tố quyết định làm cho bí tích Hôn phối thành sự, nhờ đó đôi bạn có thêm ơn thánh để sống đời chung thủy với nhau."},{"id":"B","text":"Các tín hữu cần công khai bày tỏ sự ưng thuận theo luật của Giáo hội cũng như luật pháp xã hội, nhờ đó họ được sự đón nhận của người khác."},{"id":"C","text":"Giáo hội cần có sự chắc chắn về quyết định kết hôn của hai người, và qua đó giúp họ vững vàng sống đời hôn nhân gia đình."},{"id":"D","text":"Hôn nhân là bậc sống trong Hội thánh, bí tích Hôn phối là hành vi phụng vụ, cần có người làm chứng và giúp cho đôi bạn sống chung thủy."}],"correctAnswer":"D"},{"id":"q-104","type":"single_choice","content":"Vì sao Bí tích Hôn phối thường được cử hành trong thánh lễ?","options":[{"id":"A","text":"Vì theo luật Hội thánh, Bí tích hôn phối không được cử hành ngoài thánh lễ."},{"id":"B","text":"Vì việc cử hành trong thánh lễ, Bí tích hôn phối mới được thành sự để nhờ đó đôi bạn được Thiên Chúa ban ơn trợ lực giúp họ sống sung mãn trong đời hôn nhân gia đình."},{"id":"C","text":"Vì việc đôi bạn bày tỏ sự ưng thuận hiến thân cho nhau liên kết với việc Đức Kitô hiến thân cho Hội thánh được hiện tại hoá trong thánh lễ."},{"id":"D","text":"Vì việc bày tỏ sự ưng thuận trong Bí tích Hôn phối mới có giá trị trước mặt Giáo hội qua sự chứng giám của vị chứng hôn."}],"correctAnswer":"C"},{"id":"q-105","type":"single_choice","content":"Nghi thức bí tích Hôn phối bao gồm những phần nào?","options":[{"id":"A","text":"Thẩm vấn về sự tự do ý muốn; công khai bày tỏ niềm tin Công giáo; và trao đổi lời thề."},{"id":"B","text":"Thẩm vấn về sự tự do; trao đổi lời thề hứa; và lời chúc lành của người chứng hôn."},{"id":"C","text":"Thẩm vấn về sự tự do đến hôn nhân; trao đổi lời thề và ký sổ hôn phối làm chứng từ."},{"id":"D","text":"Thẩm vấn về sự tự do; trao đổi lời thề; làm phép và trao nhẫn cưới."}],"correctAnswer":"D"},{"id":"q-106","type":"single_choice","content":"Điều kiện để được phép chuẩn kết hôn với người ngoài Công giáo?","options":[{"id":"A","text":"Hai người kết hôn chấp nhận cử hành công khai nghi thức chuẩn hôn phối khác đạo."},{"id":"B","text":"Người Công giáo cam kết giữ đức tin của mình, bảo đảm cho con cái được rửa tội và giáo dục trong Giáo hội Công giáo."},{"id":"C","text":"Hai người chấp nhận đặc tính, mục đích của hôn nhân Kitô giáo và người Công giáo cam kết giữ đức tin, bảo đảm cho con cái được rửa tội, giáo dục chúng trong Hội thánh."},{"id":"D","text":"Tuổi của hai người kết hôn phải từ 18 trở lên, có hiểu biết, chấp nhận mục đích và đặc tính của hôn nhân Kitô giáo."}],"correctAnswer":"C"},{"id":"q-107","type":"single_choice","content":"Lập gia đình với người khác đạo, bên Công giáo cần phải sống thế nào?","options":[{"id":"A","text":"Sống đạo tốt, và trở nên chứng nhân Tin mừng cho con cái và bạn đời."},{"id":"B","text":"Cố gắng nói những điều tốt đẹp về đức tin của mình cho bạn đời và người nhà bên khác đạo."},{"id":"C","text":"Sống đạo tùy theo hoàn cảnh gia đình có cho phép hay không."},{"id":"D","text":"Giữ lấy hạnh phúc gia đình bằng việc trung thành với truyền thống nội ngoại."}],"correctAnswer":"A"},{"id":"q-108","type":"single_choice","content":"Hôn nhân trọn vẹn là thế nào?","options":[{"id":"A","text":"Đã cử hành bí tích Hôn phối thành sự, và ăn ở với nhau."},{"id":"B","text":"Đã cử hành bí tích Hôn phối theo thể thức của Giáo hội."},{"id":"C","text":"Đã sống và ăn ở với nhau như vợ chồng."},{"id":"D","text":"Không mắc ngăn trở và đã cử hành bí tích Hôn phối."}],"correctAnswer":"A"},{"id":"q-109","type":"single_choice","content":"Thủ tục cưới hỏi theo giáo luật Công giáo gồm những phần nào?","options":[{"id":"A","text":"Học giáo lý hôn nhân, trình hồ sơ, và cử hành bí tích."},{"id":"B","text":"Trình hồ sơ, rao hôn phối, cử hành bí tích, ghi sổ."},{"id":"C","text":"Trình hồ sơ, rao hôn phối, xưng tội, và cử hành bí tích."},{"id":"D","text":"Đăng ký dân sự, rao hôn phối, cử hành bí tích và ghi sổ."}],"correctAnswer":"B"},{"id":"q-110","type":"single_choice","content":"Hồ sơ trình cha xứ gồm những gì?","options":[{"id":"A","text":"Căn cước công dân, giấy đăng ký kết hôn dân sự."},{"id":"B","text":"Giấy chứng nhận Rửa tội và Thêm sức."},{"id":"C","text":"Giấy chứng nhận Giáo lý hôn nhân."},{"id":"D","text":"Tất cả những điều trên."}],"correctAnswer":"D"},{"id":"q-111","type":"single_choice","content":"Bổn phận giáo dục con cái của cha mẹ bắt nguồn từ đâu?","options":[{"id":"A","text":"Thiện ích của tình yêu vợ chồng và hạnh phúc gia đình."},{"id":"B","text":"Thiện ích của xã hội và Giáo hội, nơi gia đình hiện diện."},{"id":"C","text":"Ơn gọi dự phần vào công trình sáng tạo của Thiên Chúa."},{"id":"D","text":"Ơn gọi dự phần vào công trình cứu độ của Giáo hội và xã hội."}],"correctAnswer":"C"},{"id":"q-112","type":"single_choice","content":"Mục đích của việc giáo dục con cái là gì?","options":[{"id":"A","text":"Phát triển con người toàn diện về thể lý, trí tuệ, đức hạnh và tôn giáo."},{"id":"B","text":"Phát triển toàn diện con người thể lý và tâm lý, phù hợp với xu hướng xã hội."},{"id":"C","text":"Nâng cao đời sống đức hạnh và tôn giáo, hướng đến đời sống vĩnh hằng."},{"id":"D","text":"Trưởng thành trong đời sống trí tuệ, tôn giáo, tiến tới đời sống đức tin đúng nghĩa."}],"correctAnswer":"A"},{"id":"q-113","type":"single_choice","content":"Bản chất của việc giáo dục con cái là gì?","options":[{"id":"A","text":"Những bài học nhân bản và luân lý mà cha mẹ nêu gương trước tiên nơi chính cuộc sống của mình."},{"id":"B","text":"Những giá trị làm người khởi đi từ kinh nghiệm sống của cha mẹ đã sống và hành động."},{"id":"C","text":"Những thực tại cha mẹ mong muốn con cái mình làm theo, nhằm hướng đến những điều tốt đẹp."},{"id":"D","text":"Những gì cha mẹ truyền đạt và tác động lên cách suy nghĩ, ứng xử và hành động của con cái."}],"correctAnswer":"D"},{"id":"q-114","type":"single_choice","content":"Nội dung của việc giáo dục con cái là gì?","options":[{"id":"A","text":"Rèn luyện thân thể, tập luyện nhân đức, làm chủ bản năng và định hướng cuộc đời."},{"id":"B","text":"Tôn trọng thân thể, tập sống thánh thiện, trưởng thành trong suy nghĩ và hành động."},{"id":"C","text":"Làm chủ cuộc đời, sống tự lập, trưởng thành trong suy nghĩ và hành động."},{"id":"D","text":"Định hướng cuộc sống đến những giá trị cao đẹp mà xã hội và Giáo hội mong muốn."}],"correctAnswer":"A"},{"id":"q-115","type":"single_choice","content":"Để giáo dục nhân bản cho con cái, cha mẹ phải làm như thế nào?","options":[{"id":"A","text":"Ý thức trách nhiệm, bổn phận nuôi dưỡng giáo dục, và cầu nguyện cho con cái."},{"id":"B","text":"Đồng tâm nhất trí, nêu gương sáng, tạo bầu khí yêu thương, hiểu biết, kiên nhẫn và cầu nguyện."},{"id":"C","text":"Trở nên gương sáng, thống nhất đường hướng trong hiểu biết, tạo bầu khí tín nhiệm."},{"id":"D","text":"Bảo đảm đời sống vật chất được no đủ, hiểu biết tâm lý và yêu thương con cái."}],"correctAnswer":"B"},{"id":"q-116","type":"single_choice","content":"Tại sao phải giáo dục đức tin cho con cái?","options":[{"id":"A","text":"Vì thiếu đời sống đức tin, nguy cơ thất bại rất cao trong cuộc sống."},{"id":"B","text":"Vì đức tin giúp cho con cái dễ thành công trong cuộc đời."},{"id":"C","text":"Vì đức tin là điều kiện để con cái được sống đời đạo trên bình diện cá nhân và xã hội."},{"id":"D","text":"Vì thiếu đức tin, con cái dễ rơi vào cám dỗ của những thú vui cuộc đời này."}],"correctAnswer":"C"},{"id":"q-117","type":"single_choice","content":"Để chu toàn bổn phận và trách nhiệm giáo dục đức tin cho con cái, cha mẹ cần trang bị cho mình những gì?","options":[{"id":"A","text":"Thực hành và đào sâu đức tin bằng đời sống cầu nguyện, tham dự thánh lễ, lãnh nhận bí tích."},{"id":"B","text":"Chuyên chăm tham dự thánh lễ, lãnh nhận bí tích, ngõ hầu nên gương sáng đức cho con cái."},{"id":"C","text":"Nêu gương sáng về đời sống đạo qua việc siêng năng tham dự thánh lễ và lãnh nhận các bí tích."},{"id":"D","text":"Luôn quan tâm đến việc sống đạo của con cái, thúc giục con cái đến với thánh lễ và Bí tích."}],"correctAnswer":"A"},{"id":"q-118","type":"single_choice","content":"Để giáo dục đức tin cho con cái một cách hữu hiệu, cha mẹ cần làm gì?","options":[{"id":"A","text":"Cầu nguyện chung, lo cho con cái được học giáo lý lãnh nhận bí tích, làm gương sáng và dạy tôn kính các thánh, cổ võ ơn gọi thánh hiến."},{"id":"B","text":"Cầu nguyện chung, quan tâm đến việc đi lễ của con cái, nhắc bảo con cái học giáo lý và siêng năng lãnh nhận bí tích, nhất là làm gương sáng về đời sống đức tin cho con cái."},{"id":"C","text":"Cầu nguyện chung, cùng nhau tham dự thánh lễ, thường xuyên nhắc bảo con cái tham gia các lớp giáo lý, các buổi tĩnh tâm giáo xứ, nêu gương sáng đức tin cho con cái."},{"id":"D","text":"Cầu nguyện chung, nêu gương sáng đời sống đức tin cho con cái, dạy cho con cái biết tôn kính các thánh trong Giáo hội, đặc biệt Mẹ Maria và thánh Giuse."}],"correctAnswer":"A"},{"id":"q-119","type":"single_choice","content":"Vì sao việc cầu nguyện chung trong gia đình lại vô cùng quan trọng?","options":[{"id":"A","text":"Giúp gia đình kết hiệp với nhau và với Thiên Chúa, tạo bầu khí yêu thương và thánh thiện."},{"id":"B","text":"Nâng đỡ và giải quyết những vấn nạn trong gia đình, tạo bầu khí yên vui đầm ấm trong nhà."},{"id":"C","text":"Tạo nên sự hiệp nhất trong mọi sự để yêu thương và tôn trọng nhau trong gia đình."},{"id":"D","text":"Giúp nhau nên thánh ngay chính trong môi trường gia đình."}],"correctAnswer":"A"},{"id":"q-120","type":"single_choice","content":"Tại sao Lời Chúa rất cần thiết cho đời sống hôn nhân và gia đình công giáo không?","options":[{"id":"A","text":"Vì là lời tình yêu đồng thời còn là Lời ban sự sống, giúp Hôn nhân ngày nên hoàn thiện hơn."},{"id":"B","text":"Vì là lời tình yêu ban sự sống, giúp cho đôi vợ chồng trung thành và sống bên nhau trọn đời."},{"id":"C","text":"Vì là lời giúp cho đôi vợ chồng tìm được giải pháp cho mọi vấn đề cuộc sống gia đình."},{"id":"D","text":"Vì là lời tình yêu; ban sự sống; và biểu lộ ý muốn của Thiên Chúa."}],"correctAnswer":"D"},{"id":"q-121","type":"single_choice","content":"Vì sao gia đình là trường học đầu tiên dạy các đức tính xã hội?","options":[{"id":"A","text":"Tự bản chất, gia đình là tế bào của xã hội, nhờ vào xã hội, mọi thành viên trong gia đình hưởng được những nền giáo dục tốt đẹp."},{"id":"B","text":"Gia đình là môi trường xã hội đầu tiên đứa bé tiếp cận, để từ đó đứa bé lớn lên mỗi ngày, học được kinh nghiệm xã hội để lớn lên."},{"id":"C","text":"Tự bản chất, nhờ ý thức về công lý và mối quan tâm đến người khác, gia đình luôn mở ra và hướng tới cộng đồng."},{"id":"D","text":"Gia đình chính là môi trường mà con cái tiếp cận đầu tiên trong đời, nơi đó những bài học xã hội được cha mẹ bắt đầu giảng dạy."}],"correctAnswer":"C"},{"id":"q-122","type":"single_choice","content":"Theo Đức giáo hoàng Phanxicô, để giúp con cái quan tâm đến xã hội, cha mẹ phải làm gì?","options":[{"id":"A","text":"Dạy cho con cái nhận ra giá trị đúng đắn phía sau những hào nhoáng bên ngoài của xã hội."},{"id":"B","text":"Giúp cho con cái cảm nhận về thế giới và xã hội như một gia đình."},{"id":"C","text":"Giúp cho con cái ý thức về trách nhiệm đóng góp cho những thiện ích của cộng đồng."},{"id":"D","text":"Giáo dục con cái hướng đời sống đến với những chân thiện mỹ trong đời sống xã hội."}],"correctAnswer":"B"},{"id":"q-123","type":"single_choice","content":"Theo Đức giáo hoàng Phanxicô, để giúp con cái hoà nhập xã hội, cha mẹ phải làm thế nào?","options":[{"id":"A","text":"Giúp cho con cái biết đặt mình đối diện với người khác."},{"id":"B","text":"Dạy cho con cái những kỹ năng quản trị con người và xã hội."},{"id":"C","text":"Hướng dẫn con cái đến hoà nhập với những tổ chức xã hội."},{"id":"D","text":"Đưa con cái đến làm quen và hoạt động trong những tập thể xã hội."}],"correctAnswer":"A"},{"id":"q-124","type":"single_choice","content":"Tại sao Hôn nhân Kitô giáo là tin vui cho bối cảnh đời sống hôn nhân gia đình bị khủng hoảng trong xã hội ngày nay?","options":[{"id":"A","text":"Vì Gia đình Công giáo chạy theo những trào lưu hưởng thụ của xã hội, tìm kiếm những lợi lộc cho mọi thành viên trong gia đình."},{"id":"B","text":"Vì các gia đình Công giáo không bị những trào lưu thế tục lôi kéo vào những vũng lầy của hưởng thụ, đời sống vật chất."},{"id":"C","text":"Vì dù có nhiều vấp ngã, phần đông gia đình Công giáo vẫn khát vọng và sống trong một mái ấm gia đình vui tươi, hạnh phúc."},{"id":"D","text":"Vì nhờ sức mạnh của Chúa, các gia đình Công giáo vẫn đứng vững trước những thử thách vật chất, tiền bạc, lạc thú của xã hội."}],"correctAnswer":"C"},{"id":"q-125","type":"single_choice","content":"Để hôn nhân Kitô giáo là tin vui cho con người ngày nay, gia đình Kitô hữu phải làm gì?","options":[{"id":"A","text":"Mọi thành viên đồng tâm hiệp nhất cùng chung chia mọi sự trong gia đình với nhau."},{"id":"B","text":"Vợ chồng khôn ngoan phân định điều tốt điều xấu, và quyết tâm sống cho giá trị chân chính."},{"id":"C","text":"Vợ chồng quyết tâm sống đời một vợ một chồng, chung thuỷ trọn đời."},{"id":"D","text":"Mọi người trong nhà cùng nhau tuyệt đối sống niềm tin Kitô giáo để được Chúa chúc phúc."}],"correctAnswer":"B"},{"id":"q-126","type":"single_choice","content":"Gia đình được mời gọi tham gia vào sứ mạng gì trong đời sống Hội Thánh?","options":[{"id":"A","text":"Xây dựng đời sống đức tin."},{"id":"B","text":"Tuân giữ giáo huấn Giáo hội."},{"id":"C","text":"Sứ mạng loan báo tin mừng."},{"id":"D","text":"Hiệp thông với sứ vụ rao giảng Tin mừng."}],"correctAnswer":"C"},{"id":"q-127","type":"single_choice","content":"Gia đình Kitô hữu tham dự vào sứ mạng loan báo Tin mừng như thế nào?","options":[{"id":"A","text":"Trở thành một Hội thánh tại gia bằng việc thi hành 3 chức năng tiên tri, tư tế và vương đế."},{"id":"B","text":"Nỗ lực xây dựng gia đình gương mẫu bằng đời sống đạo đức, siêng năng tham dự bí tích."},{"id":"C","text":"Xây dựng gia đình gương mẫu đời sống đức tin, siêng năng tham dự thánh lễ và phụng tự."},{"id":"D","text":"Bằng đời sống kinh nguyện và phụng vụ, gia đình Kitô hữu sẽ là hạt giống đem Tin mừng đến cho mọi người."}],"correctAnswer":"A"},{"id":"q-128","type":"single_choice","content":"Để loan báo Tin mừng bằng cách thực thi chức vụ tư tế, gia đình Kitô hữu phải làm gì?","options":[{"id":"A","text":"Lấy tình bác ái mà đối xử với nhau, dùng lời nói việc làm để mang lại hạnh phúc cho nhau."},{"id":"B","text":"Lấy lòng mến mà đối xử với nhau, dùng lời nói việc làm làm chứng cho đạo thánh Chúa."},{"id":"C","text":"Lấy đức tin làm thước đo cho mọi hành vi cuộc sống, dùng lời nói mà loan báo Tin mừng."},{"id":"D","text":"Lấy lòng tin đón nhận Lời Chúa, dùng lời nói việc làm mang lời Chúa đến cho mọi người."}],"correctAnswer":"B"},{"id":"q-129","type":"single_choice","content":"Để loan báo Tin mừng bằng cách thực thi chức vụ tư tế, gia đình Kitô hữu phải làm gì?","options":[{"id":"A","text":"Thánh hoá gia đình cũng như Hội thánh và thế giới, qua việc cử hành các bí tích và kinh nguyện."},{"id":"B","text":"Dùng lời nói thánh hoá gia đình, và cùng gia đình cử hành chức năng tư tế, thờ phượng Thiên Chúa."},{"id":"C","text":"Dùng đời sống đức tin để thánh hoá bản thân gia đình, qua việc mọi thành viên cùng cử hành bí tích."},{"id":"D","text":"Thánh hoá công ăn việc làm, và nhiệt tâm lo việc nhà Chúa trong Giáo xứ, giáo họ..."}],"correctAnswer":"A"},{"id":"q-130","type":"single_choice","content":"Để loan báo Tin mừng bằng cách thực thi chức vụ vương đế, gia đình Kitô hữu phải làm gì?","options":[{"id":"A","text":"Chiến đấu và chiến thắng tội lỗi, phục vụ Chúa Giêsu nơi mọi người."},{"id":"B","text":"Chiến đấu chống lại mọi cơn cám dỗ, thánh hoá bản thân, gia đình."},{"id":"C","text":"Xây dựng đời sống đức tin và cùng nhau thực thi vai trò vương đế nơi mọi người."},{"id":"D","text":"Xây dựng đời sống gia đình gương mẫu về đời sống đức tin, năng lãnh nhận bí tích."}],"correctAnswer":"A"},{"id":"q-131","type":"single_choice","content":"Linh đạo hôn nhân và gia đình là gì?","options":[{"id":"A","text":"Giới răn của Chúa và của Giáo hội dành cho những người sống đời hôn nhân và gia đình."},{"id":"B","text":"Đạo lý xã hội và Giáo hội về hôn nhân gia đình."},{"id":"C","text":"Con đường nên thánh dành cho những người sống trong bậc hôn nhân và gia đình."},{"id":"D","text":"Con đường luân lý trong đời sống hôn nhân và gia đình Công giáo."}],"correctAnswer":"C"},{"id":"q-132","type":"single_choice","content":"Để thực hành linh đạo hôn nhân và gia đình, đôi vợ chồng cần sống thế nào?","options":[{"id":"A","text":"Sống trong sáng và lành mạnh để bảo vệ hạnh phúc gia đình, làm chứng cho Tin mừng."},{"id":"B","text":"Hy sinh để vui nhận nghịch cảnh, trung thành để sống lời cam kết, sinh sản và giáo dục con cái."},{"id":"C","text":"Canh tân cuộc sống, làm chứng và loan báo Tin mừng, sống cầu nguyện, lãnh nhận Bí tích."},{"id":"D","text":"Hướng đến việc sinh sản, giáo dục con cái, trung thành, hy sinh, làm chứng cho Tin mừng, cầu nguyện và siêng năng lãnh nhận các Bí tích."}],"correctAnswer":"C"}]</script>
+  <script>
+/* Trắc nghiệm Giáo lý — Vanilla JS (ES6+) */
+(() => {
+  'use strict';
+
+  /* =========================================================
+   * 1. Hằng số & icon
+   * ======================================================= */
+  const SCHEMA_VERSION = 1;
+  const KEYS = {
+    session: 'quizapp.session.v1',
+    history: 'quizapp.history.v1',
+    theme: 'quizapp.theme',
+    prefs: 'quizapp.prefs.v1',
+  };
+  const COUNT_CHOICES = [10, 20, 50, 'all'];
+  const DEFAULT_EXAM_MINUTES = 30;
+  const MAX_HISTORY = 20;
+  const MIN_OPTIONS = 2;
+  const MAX_OPTIONS = 6;
+  const LABELS = 'ABCDEFGH';
+
+  const ICONS = {
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    bookmark: '<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    x: '<path d="M18 6 6 18M6 6l12 12"/>',
+    left: '<path d="m15 18-6-6 6-6"/>',
+    right: '<path d="m9 18 6-6-6-6"/>',
+    list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    rotate: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+    eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+    alert: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
+    send: '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+    play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  };
+
+  /* =========================================================
+   * 2. Helpers
+   * ======================================================= */
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  function icon(name) {
+    const svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('class', 'icon');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = ICONS[name] || ''; // hằng số nội bộ, không phải dữ liệu JSON
+    return svg;
+  }
+
+  function el(tag, props = {}, children = []) {
+    const node = document.createElement(tag);
+    for (const [k, v] of Object.entries(props)) {
+      if (v == null || v === false) continue;
+      if (k === 'class') node.className = v;
+      else if (k === 'text') node.textContent = v;
+      else if (k === 'dataset') Object.assign(node.dataset, v);
+      else node.setAttribute(k, v === true ? '' : v);
+    }
+    for (const c of [].concat(children)) {
+      if (c == null) continue;
+      node.append(c);
+    }
+    return node;
+  }
+
+  /** Đặt nội dung của node = [icon?, text] */
+  function setContent(node, text, iconName, iconAfter = false) {
+    const parts = [];
+    if (iconName && !iconAfter) parts.push(icon(iconName));
+    parts.push(document.createTextNode(text));
+    if (iconName && iconAfter) parts.push(icon(iconName));
+    node.replaceChildren(...parts);
+  }
+
+  function hydrateIcons(root = document) {
+    $$('[data-icon]', root).forEach((n) => {
+      if (!n.firstChild) n.append(icon(n.dataset.icon));
+    });
+  }
+
+  function shuffle(arr) { // Fisher–Yates
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const pad2 = (n) => String(n).padStart(2, '0');
+  function formatDuration(ms) {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  }
+  function formatPercent(v) {
+    return `${Math.round(v * 10) / 10}%`.replace('.', ',');
+  }
+  function formatDate(ts) {
+    try {
+      return new Date(ts).toLocaleString('vi-VN', { hour12: false, dateStyle: 'short', timeStyle: 'short' });
+    } catch { return ''; }
+  }
+  function normalizeText(s) {
+    return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  }
+  const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+  const isNonEmptyString = (v) => typeof v === 'string' && v.trim() !== '';
+  const uid = () => `s-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+
+  /* localStorage an toàn */
+  const storage = {
+    read(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw == null ? null : JSON.parse(raw);
+      } catch { return null; }
+    },
+    write(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; }
+    },
+    readRaw(key) { try { return localStorage.getItem(key); } catch { return null; } },
+    writeRaw(key, v) { try { localStorage.setItem(key, v); } catch { /* bỏ qua */ } },
+    remove(key) { try { localStorage.removeItem(key); } catch { /* bỏ qua */ } },
+  };
+
+  /* =========================================================
+   * 3. State
+   * ======================================================= */
+  const state = {
+    bank: [],
+    bankMap: new Map(),
+    bankIndex: new Map(),
+    warnings: [],
+    session: null,
+    view: 'loading',
+    prefs: { mode: 'practice', count: 'all', shuffleQ: false, shuffleO: false, minutes: DEFAULT_EXAM_MINUTES },
+    ui: { quizSearch: '', quizFilter: 'all', reviewSearch: '', reviewFilter: 'all', drawerOpen: false, includeSkipped: false },
+    timerId: null,
+    modalResolve: null,
+  };
+
+  const qOf = (id) => state.bankMap.get(id);
+
+  /* =========================================================
+   * 4. Tải & kiểm tra dữ liệu câu hỏi
+   * ======================================================= */
+  async function loadQuestions() {
+    const node = document.getElementById('quiz-data');
+    if (!node || !node.textContent.trim()) throw new Error('Không tìm thấy dữ liệu câu hỏi nhúng trong file.');
+    try {
+      return JSON.parse(node.textContent);
+    } catch {
+      throw new Error('Dữ liệu câu hỏi nhúng không phải JSON hợp lệ.');
+    }
+  }
+
+  /** Trả về { valid: Question[], errors: string[] }. Câu lỗi bị loại và ghi chú lại. */
+  function validateQuestions(raw) {
+    if (!Array.isArray(raw)) {
+      throw new Error('Dữ liệu sai cấu trúc: phần tử gốc phải là một mảng câu hỏi.');
+    }
+    if (raw.length === 0) throw new Error('File dữ liệu rỗng, chưa có câu hỏi nào.');
+
+    const valid = [];
+    const errors = [];
+    const seen = new Set();
+
+    raw.forEach((q, i) => {
+      const tag = `Mục #${i + 1}${isPlainObject(q) && q.id ? ` (${q.id})` : ''}`;
+      if (!isPlainObject(q)) return errors.push(`${tag}: không phải đối tượng.`);
+      if (!isNonEmptyString(q.id)) return errors.push(`${tag}: thiếu "id".`);
+      if (seen.has(q.id)) return errors.push(`${tag}: ID bị trùng, đã bỏ qua.`);
+      if (q.type !== 'single_choice') return errors.push(`${tag}: "type" không được hỗ trợ.`);
+      if (!isNonEmptyString(q.content)) return errors.push(`${tag}: thiếu nội dung câu hỏi.`);
+      if (!Array.isArray(q.options) || q.options.length < MIN_OPTIONS || q.options.length > MAX_OPTIONS) {
+        return errors.push(`${tag}: số phương án không hợp lệ (${Array.isArray(q.options) ? q.options.length : 0}).`);
+      }
+      const optIds = new Set();
+      for (const o of q.options) {
+        if (!isPlainObject(o) || !isNonEmptyString(o.id) || !isNonEmptyString(o.text) || optIds.has(o.id)) {
+          return errors.push(`${tag}: phương án sai định dạng hoặc trùng ID.`);
+        }
+        optIds.add(o.id);
+      }
+      if (!optIds.has(q.correctAnswer)) return errors.push(`${tag}: "correctAnswer" không nằm trong các phương án.`);
+
+      seen.add(q.id);
+      valid.push({
+        id: q.id,
+        type: q.type,
+        content: q.content.trim(),
+        options: q.options.map((o) => ({ id: o.id, text: o.text.trim() })),
+        correctAnswer: q.correctAnswer,
+      });
+    });
+
+    if (valid.length === 0) {
+      const err = new Error('Không có câu hỏi nào hợp lệ trong file dữ liệu.');
+      err.details = errors.slice(0, 20);
+      throw err;
+    }
+    return { valid, errors };
+  }
+
+  /* =========================================================
+   * 5. Session: tạo, lưu, khôi phục
+   * ======================================================= */
+  /** Chọn ngẫu nhiên không trùng lặp `count` câu; giới hạn theo số câu thực tế. */
+  function pickQuestionIds(poolIds, count, shuffleQ) {
+    const limit = effectiveCount(count, poolIds.length);
+    let ids = limit >= poolIds.length ? poolIds.slice() : shuffle(poolIds).slice(0, limit);
+    ids = shuffleQ ? shuffle(ids) : ids.sort((a, b) => state.bankIndex.get(a) - state.bankIndex.get(b));
+    return ids;
+  }
+
+  function effectiveCount(count, total) {
+    if (count === 'all') return total;
+    const n = Number(count);
+    if (!Number.isFinite(n) || n < 1) return total;
+    return Math.min(n, total);
+  }
+
+  function createSession({ mode, ids, shuffleO, minutes, parentId = null, shuffleQ = false }) {
+    const now = Date.now();
+    const optionOrder = {};
+    ids.forEach((id) => {
+      const optIds = qOf(id).options.map((o) => o.id);
+      optionOrder[id] = shuffleO ? shuffle(optIds) : optIds;
+    });
+    const isExam = mode === 'exam';
+    return {
+      v: SCHEMA_VERSION,
+      id: uid(),
+      mode,
+      status: 'in_progress',
+      questionIds: ids,
+      optionOrder,
+      current: 0,
+      answers: {},
+      marked: {},
+      checked: {},
+      startedAt: now,
+      durationMin: isExam ? minutes : null,
+      deadline: isExam ? now + minutes * 60000 : null,
+      endedAt: null,
+      shuffleQ: !!shuffleQ,
+      shuffleO: !!shuffleO,
+      parentId,
+    };
+  }
+
+  function startQuiz(opts) {
+    state.session = createSession(opts);
+    state.ui.quizSearch = '';
+    state.ui.quizFilter = 'all';
+    state.ui.reviewFilter = 'all';
+    state.ui.reviewSearch = '';
+    $('#quiz-search').value = '';
+    saveProgress();
+    setView('quiz');
+  }
+
+  function saveProgress() {
+    if (!state.session) return;
+    if (!storage.write(KEYS.session, state.session)) {
+      // localStorage đầy/bị chặn: vẫn tiếp tục làm bài, chỉ không lưu được
+    }
+  }
+
+  function clearSavedSession() { storage.remove(KEYS.session); }
+
+  /** Kiểm tra & chuẩn hóa dữ liệu đã lưu. Trả về session hợp lệ hoặc null. */
+  function sanitizeSession(raw) {
+    if (!isPlainObject(raw) || raw.v !== SCHEMA_VERSION) return null;
+    if (!isNonEmptyString(raw.id)) return null;
+    if (raw.mode !== 'practice' && raw.mode !== 'exam') return null;
+    if (raw.status !== 'in_progress' && raw.status !== 'submitted') return null;
+    if (!Array.isArray(raw.questionIds) || raw.questionIds.length === 0) return null;
+    if (new Set(raw.questionIds).size !== raw.questionIds.length) return null;
+    if (!raw.questionIds.every((id) => state.bankMap.has(id))) return null; // bộ câu hỏi đã thay đổi
+    if (!isPlainObject(raw.optionOrder)) return null;
+    for (const id of raw.questionIds) {
+      const order = raw.optionOrder[id];
+      const real = qOf(id).options.map((o) => o.id);
+      if (!Array.isArray(order) || order.length !== real.length || !real.every((x) => order.includes(x))) return null;
+    }
+    if (!Number.isFinite(raw.startedAt)) return null;
+    if (raw.mode === 'exam' && (!Number.isFinite(raw.deadline) || !Number.isFinite(raw.durationMin))) return null;
+    if (raw.status === 'submitted' && !Number.isFinite(raw.endedAt)) return null;
+
+    const idSet = new Set(raw.questionIds);
+    const pickMap = (m, valueOk) => {
+      const out = {};
+      if (isPlainObject(m)) for (const [k, v] of Object.entries(m)) if (idSet.has(k) && valueOk(k, v)) out[k] = v;
+      return out;
+    };
+    const current = Number.isInteger(raw.current) ? Math.min(Math.max(raw.current, 0), raw.questionIds.length - 1) : 0;
+
+    return {
+      v: SCHEMA_VERSION,
+      id: raw.id,
+      mode: raw.mode,
+      status: raw.status,
+      questionIds: raw.questionIds.slice(),
+      optionOrder: raw.optionOrder,
+      current,
+      answers: pickMap(raw.answers, (k, v) => qOf(k).options.some((o) => o.id === v)),
+      marked: pickMap(raw.marked, (k, v) => v === true),
+      checked: pickMap(raw.checked, (k, v) => v === true && raw.mode === 'practice'),
+      startedAt: raw.startedAt,
+      durationMin: raw.mode === 'exam' ? raw.durationMin : null,
+      deadline: raw.mode === 'exam' ? raw.deadline : null,
+      endedAt: raw.status === 'submitted' ? raw.endedAt : null,
+      shuffleQ: !!raw.shuffleQ,
+      shuffleO: !!raw.shuffleO,
+      parentId: typeof raw.parentId === 'string' ? raw.parentId : null,
+    };
+  }
+
+  /** Trả về false nếu không có bài lưu, 'expired' nếu bài thi đã hết hạn, ngược lại true. */
+  function restoreProgress() {
+    const raw = storage.read(KEYS.session);
+    if (raw == null) return false;
+    const session = sanitizeSession(raw);
+    if (!session) {
+      clearSavedSession();
+      toast('Dữ liệu bài làm đã lưu không còn tương thích nên đã được bỏ qua.', 'error');
+      return false;
+    }
+    state.session = session;
+    // Bài thi đã hết hạn khi vắng mặt → tự kết thúc
+    if (session.status === 'in_progress' && session.mode === 'exam' && Date.now() >= session.deadline) {
+      finalizeSubmit(session.deadline);
+      toast('Bài thi trước đó đã hết thời gian và được tự động nộp.', 'info');
+      return 'expired';
+    }
+    return true;
+  }
+
+  function loadHistory() {
+    const raw = storage.read(KEYS.history);
+    if (!Array.isArray(raw)) return [];
+    return raw.filter((h) => isPlainObject(h) && Number.isFinite(h.finishedAt) && Number.isFinite(h.total) && Number.isFinite(h.correct)).slice(0, MAX_HISTORY);
+  }
+
+  function loadPrefs() {
+    const raw = storage.read(KEYS.prefs);
+    if (!isPlainObject(raw)) return;
+    const p = state.prefs;
+    if (raw.mode === 'practice' || raw.mode === 'exam') p.mode = raw.mode;
+    if (COUNT_CHOICES.includes(raw.count)) p.count = raw.count;
+    p.shuffleQ = raw.shuffleQ === true;
+    p.shuffleO = raw.shuffleO === true;
+    if (Number.isInteger(raw.minutes) && raw.minutes >= 1 && raw.minutes <= 300) p.minutes = raw.minutes;
+  }
+  const savePrefs = () => storage.write(KEYS.prefs, state.prefs);
+
+  function resetQuiz() {
+    stopTimer();
+    state.session = null;
+    clearSavedSession();
+    closeDrawer();
+  }
+
+  /* =========================================================
+   * 6. Logic làm bài
+   * ======================================================= */
+  const currentId = () => state.session.questionIds[state.session.current];
+  const isRevealed = (id) => state.session.mode === 'practice' && !!state.session.checked[id];
+  const isLocked = (id) => state.session.status === 'submitted' || isRevealed(id);
+
+  function selectAnswer(optionId) {
+    const s = state.session;
+    if (!s || s.status !== 'in_progress') return;
+    const id = currentId();
+    if (isLocked(id)) return;
+    if (!qOf(id).options.some((o) => o.id === optionId)) return;
+    s.answers[id] = optionId; // lưu ID gốc, không lưu nhãn hiển thị
+    saveProgress();
+    renderQuiz();
+  }
+
+  function checkAnswer() {
+    const s = state.session;
+    if (!s || s.mode !== 'practice' || s.status !== 'in_progress') return;
+    const id = currentId();
+    if (!s.answers[id] || s.checked[id]) return;
+    s.checked[id] = true;
+    saveProgress();
+    renderQuiz();
+  }
+
+  function toggleBookmark() {
+    const s = state.session;
+    if (!s || s.status !== 'in_progress') return;
+    const id = currentId();
+    if (s.marked[id]) delete s.marked[id]; else s.marked[id] = true;
+    saveProgress();
+    renderQuiz();
+    toast(s.marked[id] ? 'Đã đánh dấu câu hỏi' : 'Đã bỏ đánh dấu');
+  }
+
+  function goToQuestion(index, { focus = false } = {}) {
+    const s = state.session;
+    if (!s || !Number.isInteger(index) || index < 0 || index >= s.questionIds.length) return;
+    const changed = index !== s.current;
+    s.current = index;
+    saveProgress();
+    renderQuiz({ animate: changed });
+    if (focus) $('#question-text').focus({ preventScroll: false });
+  }
+
+  function calculateResult(s = state.session) {
+    const total = s.questionIds.length;
+    let correct = 0, wrong = 0, skipped = 0;
+    for (const id of s.questionIds) {
+      const a = s.answers[id];
+      if (!a) skipped++;
+      else if (a === qOf(id).correctAnswer) correct++;
+      else wrong++;
+    }
+    const percent = total > 0 ? (correct / total) * 100 : 0;
+    const end = s.endedAt ?? Date.now();
+    let usedMs = Math.max(0, end - s.startedAt);
+    if (s.mode === 'exam') usedMs = Math.min(usedMs, s.durationMin * 60000);
+    return { total, correct, wrong, skipped, percent, score: correct, usedMs };
+  }
+
+  function gradeOf(percent) {
+    if (percent >= 90) return { label: 'Xuất sắc', cls: 'g-excellent' };
+    if (percent >= 75) return { label: 'Tốt', cls: 'g-good' };
+    if (percent >= 50) return { label: 'Đạt', cls: 'g-pass' };
+    return { label: 'Cần cải thiện', cls: 'g-poor' };
+  }
+
+  /** Kết thúc lượt làm (không hỏi xác nhận). */
+  function finalizeSubmit(endedAt = Date.now()) {
+    const s = state.session;
+    if (!s || s.status === 'submitted') return;
+    s.status = 'submitted';
+    s.endedAt = s.mode === 'exam' ? Math.min(endedAt, s.deadline) : endedAt;
+    stopTimer();
+    saveProgress();
+    const r = calculateResult(s);
+    const history = loadHistory();
+    history.unshift({
+      id: s.id, finishedAt: s.endedAt, mode: s.mode, total: r.total, correct: r.correct,
+      wrong: r.wrong, skipped: r.skipped, percent: r.percent, usedMs: r.usedMs, parentId: s.parentId,
+    });
+    storage.write(KEYS.history, history.slice(0, MAX_HISTORY));
+  }
+
+  async function submitQuiz({ auto = false } = {}) {
+    const s = state.session;
+    if (!s || s.status !== 'in_progress') return;
+    if (!auto) {
+      const unanswered = s.questionIds.filter((id) => !s.answers[id]).length;
+      const ok = await confirmDialog({
+        title: 'Nộp bài?',
+        message: unanswered > 0
+          ? `Bạn còn ${unanswered} câu chưa trả lời. Những câu này sẽ được tính 0 điểm. Bạn vẫn muốn nộp bài?`
+          : 'Bạn đã trả lời tất cả câu hỏi. Xác nhận nộp bài?',
+        confirmText: 'Nộp bài',
+        cancelText: 'Tiếp tục làm',
+      });
+      if (!ok || state.session !== s || s.status !== 'in_progress') return;
+    } else {
+      closeModal(false);
+      toast('Đã hết thời gian — bài thi được tự động nộp.', 'error');
+    }
+    finalizeSubmit();
+    closeDrawer();
+    setView('result');
+  }
+
+  function retryWrongQuestions() {
+    const s = state.session;
+    if (!s || s.status !== 'submitted') return;
+    const include = state.ui.includeSkipped;
+    const ids = s.questionIds.filter((id) => {
+      const a = s.answers[id];
+      return a ? a !== qOf(id).correctAnswer : include;
+    });
+    if (ids.length === 0) {
+      setRetryNote(include ? 'Bạn đã trả lời đúng tất cả các câu — không có câu nào để luyện tập lại.' : 'Không có câu trả lời sai nào để luyện tập lại. Tuyệt vời!');
+      toast('Không có câu nào để luyện tập lại', 'success');
+      return;
+    }
+    // Lượt mới độc lập; kết quả của lượt cũ vẫn nằm trong lịch sử
+    startQuiz({
+      mode: 'practice', ids: state.prefs.shuffleQ ? shuffle(ids) : ids,
+      shuffleO: state.prefs.shuffleO, shuffleQ: state.prefs.shuffleQ, parentId: s.id,
+    });
+  }
+
+  function restartSameSet() {
+    const s = state.session;
+    if (!s) return;
+    startQuiz({
+      mode: s.mode, ids: s.shuffleQ ? shuffle(s.questionIds) : s.questionIds.slice(),
+      shuffleO: s.shuffleO, shuffleQ: s.shuffleQ, minutes: s.durationMin, parentId: null,
+    });
+  }
+
+  /* ---- Lọc & tìm kiếm ---- */
+  function matchesFilter(s, id, filter, search) {
+    if (search) {
+      if (!normalizeText(qOf(id).content).includes(search)) return false;
+    }
+    const a = s.answers[id];
+    const q = qOf(id);
+    switch (filter) {
+      case 'unanswered': return !a;
+      case 'answered': return !!a;
+      case 'marked': return !!s.marked[id];
+      case 'correct': return !!a && a === q.correctAnswer;
+      case 'wrong': return !!a && a !== q.correctAnswer;
+      default: return true;
+    }
+  }
+
+  /* =========================================================
+   * 7. Timer
+   * ======================================================= */
+  function startTimer() {
+    stopTimer();
+    tick();
+    state.timerId = setInterval(tick, 1000);
+  }
+  function stopTimer() {
+    if (state.timerId != null) { clearInterval(state.timerId); state.timerId = null; }
+  }
+  function tick() {
+    const s = state.session;
+    if (!s || s.status !== 'in_progress' || state.view !== 'quiz') { stopTimer(); return; }
+    let text, warn = false;
+    if (s.mode === 'exam') {
+      const remaining = s.deadline - Date.now(); // deadline tuyệt đối
+      if (remaining <= 0) { stopTimer(); submitQuiz({ auto: true }); return; }
+      text = formatDuration(remaining);
+      warn = remaining <= 60000;
+    } else {
+      text = formatDuration(Date.now() - s.startedAt);
+    }
+    $$('[data-timer]').forEach((n) => { n.textContent = text; });
+    $('#timer-box').classList.toggle('warn', warn);
+    $('.timer-chip').classList.toggle('warn', warn);
+  }
+
+  /* =========================================================
+   * 8. Render
+   * ======================================================= */
+  const VIEWS = ['loading', 'error', 'welcome', 'quiz', 'result', 'review'];
+
+  function setView(name) {
+    state.view = name;
+    VIEWS.forEach((v) => { $(`#view-${v}`).hidden = v !== name; });
+    stopTimer();
+    if (name !== 'quiz') closeDrawer();
+    switch (name) {
+      case 'welcome': renderWelcome(); break;
+      case 'quiz': renderQuiz({ animate: false }); startTimer(); break;
+      case 'result': renderResult(); break;
+      case 'review': renderReview(); break;
+      default: break;
+    }
+    window.scrollTo({ top: 0 });
+    const heading = $(`#view-${name} [tabindex="-1"]`);
+    if (heading && name !== 'quiz') heading.focus({ preventScroll: true });
+  }
+
+  /* ---- Welcome ---- */
+  function renderCountChoices() {
+    const total = state.bank.length;
+    const wrap = $('#count-choices');
+    wrap.replaceChildren(...COUNT_CHOICES.map((c) => {
+      const input = el('input', { type: 'radio', name: 'count', value: String(c) });
+      input.checked = String(state.prefs.count) === String(c);
+      const label = c === 'all' ? `Tất cả (${total})` : String(c);
+      return el('label', { class: 'choice' }, [input, el('span', { class: 'choice-body', text: label })]);
+    }));
+  }
+
+  function updateCountHint() {
+    const total = state.bank.length;
+    const c = state.prefs.count;
+    const n = effectiveCount(c, total);
+    const hint = $('#count-hint');
+    const limited = c !== 'all' && Number(c) > total;
+    hint.textContent = limited
+      ? `Bạn chọn ${c} câu nhưng ngân hàng chỉ có ${total} câu — sẽ làm ${n} câu. Câu hỏi được chọn ngẫu nhiên, không trùng lặp.`
+      : `Sẽ làm ${n}/${total} câu${n < total ? ', chọn ngẫu nhiên không trùng lặp' : ''}. Điểm và thống kê chỉ tính trên các câu đã chọn.`;
+    setContent($('#start-btn'), `Bắt đầu làm bài (${n} câu)`, 'play');
+  }
+
+  function renderWelcome() {
+    $('#welcome-total').textContent = String(state.bank.length);
+    const p = state.prefs;
+    $$('input[name="mode"]').forEach((r) => { r.checked = r.value === p.mode; });
+    $('#exam-time-field').hidden = p.mode !== 'exam';
+    $('#exam-minutes').value = String(p.minutes);
+    $('#opt-shuffle-q').checked = p.shuffleQ;
+    $('#opt-shuffle-o').checked = p.shuffleO;
+    renderCountChoices();
+    updateCountHint();
+    renderResumeCard();
+    renderHistory();
+    renderWarnings();
+  }
+
+  function renderWarnings() {
+    const box = $('#data-warnings');
+    if (state.warnings.length === 0) { box.hidden = true; return; }
+    $('summary', box).textContent = `${state.warnings.length} câu hỏi trong file dữ liệu bị bỏ qua do lỗi định dạng`;
+    $('ul', box).replaceChildren(...state.warnings.slice(0, 50).map((w) => el('li', { text: w })));
+    box.hidden = false;
+  }
+
+  function renderResumeCard() {
+    const card = $('#resume-card');
+    const s = state.session;
+    if (!s) { card.hidden = true; return; }
+    const total = s.questionIds.length;
+    const answered = s.questionIds.filter((id) => s.answers[id]).length;
+    const modeName = s.mode === 'exam' ? 'Thi thử' : 'Luyện tập';
+    const nodes = [];
+    if (s.status === 'in_progress') {
+      nodes.push(el('p', {}, [el('strong', { text: 'Bạn có bài đang làm dở. ' }),
+        document.createTextNode(`${modeName} — đã trả lời ${answered}/${total} câu.`)]));
+      nodes.push(el('div', { class: 'row wrap' }, [
+        el('button', { class: 'btn primary', type: 'button', 'data-action': 'resume', text: 'Tiếp tục bài cũ' }),
+      ]));
+    } else {
+      const r = calculateResult(s);
+      nodes.push(el('p', {}, [el('strong', { text: 'Kết quả lần làm gần nhất: ' }),
+        document.createTextNode(`${r.correct}/${r.total} câu đúng (${formatPercent(r.percent)}) — ${modeName}.`)]));
+      nodes.push(el('div', { class: 'row wrap' }, [
+        el('button', { class: 'btn primary', type: 'button', 'data-action': 'view-result', text: 'Xem kết quả' }),
+        el('button', { class: 'btn', type: 'button', 'data-action': 'open-review', text: 'Xem lại bài làm' }),
+      ]));
+    }
+    card.replaceChildren(...nodes);
+    card.hidden = false;
+  }
+
+  function renderHistory() {
+    const list = loadHistory();
+    $('#history-empty').hidden = list.length > 0;
+    $('#history-list').replaceChildren(...list.map((h) => el('li', {}, [
+      el('strong', { text: `${h.correct}/${h.total} đúng · ${formatPercent(h.percent || 0)}` }),
+      el('div', { class: 'muted', text: `${h.mode === 'exam' ? 'Thi thử' : 'Luyện tập'}${h.parentId ? ' (câu sai)' : ''} · ${formatDuration(h.usedMs || 0)}` }),
+      el('div', { class: 'muted small', text: formatDate(h.finishedAt) }),
+    ])));
+  }
+
+  /* ---- Quiz ---- */
+  const FILTER_LABELS = {
+    all: 'Tất cả', unanswered: 'Chưa trả lời', answered: 'Đã trả lời', marked: 'Đã đánh dấu',
+    correct: 'Đúng', wrong: 'Sai',
+  };
+
+  function renderQuiz({ animate = false } = {}) {
+    const s = state.session;
+    if (!s) return;
+    renderQuestion(animate);
+    renderSidebar();
+    renderQuestionNavigator();
+  }
+
+  function renderQuestion(animate) {
+    const s = state.session;
+    const id = currentId();
+    const q = qOf(id);
+    const total = s.questionIds.length;
+    const revealed = isRevealed(id);
+    const locked = isLocked(id);
+    const answer = s.answers[id];
+
+    $('#mode-badge').textContent = s.mode === 'exam' ? 'Chế độ thi thử' : 'Chế độ luyện tập';
+    $('#q-index').textContent = `Câu ${s.current + 1} / ${total}`;
+    $('#question-text').textContent = q.content;
+
+    const marked = !!s.marked[id];
+    const bm = $('#bookmark-btn');
+    bm.setAttribute('aria-pressed', String(marked));
+    setContent(bm, marked ? 'Đã đánh dấu' : 'Đánh dấu', 'bookmark');
+
+    const order = s.optionOrder[id];
+    $('#kbd-max').textContent = String(order.length);
+    const optionsEl = $('#options');
+    optionsEl.replaceChildren(...order.map((oid, i) => {
+      const opt = q.options.find((o) => o.id === oid);
+      const isSel = answer === oid;
+      const cls = ['option'];
+      let srText = '';
+      let markIcon = null;
+      if (revealed) {
+        if (oid === q.correctAnswer) { cls.push('is-correct'); srText = ' (đáp án đúng)'; markIcon = 'check'; }
+        else if (isSel) { cls.push('is-wrong'); srText = ' (bạn chọn sai)'; markIcon = 'x'; }
+      }
+      const btn = el('button', {
+        type: 'button', class: cls.join(' '), role: 'radio',
+        'aria-checked': String(isSel), 'aria-disabled': locked ? 'true' : null,
+        dataset: { optionId: oid },
+      }, [
+        el('span', { class: 'key', text: LABELS[i] || String(i + 1), 'aria-hidden': 'true' }),
+        el('span', { class: 'label' }, [document.createTextNode(opt.text), el('span', { class: 'sr-only', text: srText })]),
+        el('span', { class: 'mark' }, markIcon ? [icon(markIcon)] : []),
+      ]);
+      return btn;
+    }));
+
+    // Phản hồi sau khi kiểm tra
+    const fb = $('#feedback');
+    if (revealed) {
+      const correct = answer === q.correctAnswer;
+      const correctPos = order.indexOf(q.correctAnswer);
+      fb.className = `feedback ${correct ? 'ok' : 'bad'}`;
+      fb.textContent = correct ? 'Chính xác!' : `Chưa đúng. Đáp án đúng là ${LABELS[correctPos]}.`;
+      fb.hidden = false;
+    } else {
+      fb.hidden = true;
+      fb.textContent = '';
+    }
+
+    // Nút kiểm tra: chỉ ở chế độ luyện tập
+    const checkWrap = $('#check-wrap');
+    checkWrap.hidden = false;
+    const checkBtn = $('#check-btn');
+    checkBtn.hidden = s.mode !== 'practice';
+    checkBtn.disabled = !answer || revealed;
+    setContent(checkBtn, revealed ? 'Đã kiểm tra' : 'Kiểm tra đáp án', 'check');
+
+    setContent($('#prev-btn'), 'Câu trước', 'left');
+    setContent($('#next-btn'), 'Câu tiếp theo', 'right', true);
+    $('#prev-btn').disabled = s.current === 0;
+    $('#next-btn').disabled = s.current === total - 1;
+    setContent($('#drawer-btn'), `Câu ${s.current + 1}/${total}`, 'list');
+
+    if (animate) {
+      const card = $('#question-card');
+      card.classList.remove('enter');
+      void card.offsetWidth;
+      card.classList.add('enter');
+    }
+  }
+
+  function renderSidebar() {
+    const s = state.session;
+    const total = s.questionIds.length;
+    const answered = s.questionIds.filter((id) => s.answers[id]).length;
+    const marked = s.questionIds.filter((id) => s.marked[id]).length;
+    const isPractice = s.mode === 'practice';
+    let okCount = 0, badCount = 0;
+    if (isPractice) {
+      for (const id of s.questionIds) {
+        if (!s.checked[id]) continue;
+        if (s.answers[id] === qOf(id).correctAnswer) okCount++; else badCount++;
+      }
+    }
+    $('#st-total').textContent = String(total);
+    $('#st-answered').textContent = String(answered);
+    $('#st-unanswered').textContent = String(total - answered);
+    $('#st-marked').textContent = String(marked);
+    $('#st-correct').textContent = String(okCount);
+    $('#st-wrong').textContent = String(badCount);
+    $('#st-correct-wrap').hidden = !isPractice;
+    $('#st-wrong-wrap').hidden = !isPractice;
+
+    const pct = total ? Math.round((answered / total) * 100) : 0;
+    $('#progress-bar').style.width = `${pct}%`;
+    $('#progress').setAttribute('aria-valuenow', String(pct));
+    $('#progress-text').textContent = `${answered}/${total} câu đã trả lời (${pct}%)`;
+
+    $('#timer-label').textContent = s.mode === 'exam' ? 'Thời gian còn lại' : 'Thời gian đã làm';
+
+    const filters = ['all', 'unanswered', 'answered', 'marked'];
+    renderChips($('#quiz-filters'), filters, state.ui.quizFilter, 'quiz-filter');
+
+    setContent($('[data-action="submit"]'), 'Nộp bài', 'send');
+    $('.drawer-close').replaceChildren(icon('x'));
+  }
+
+  function renderChips(container, filters, active, action, counts) {
+    container.replaceChildren(...filters.map((f) => {
+      const label = counts ? `${FILTER_LABELS[f]} (${counts[f]})` : FILTER_LABELS[f];
+      return el('button', { type: 'button', class: 'chip', 'aria-pressed': String(active === f), dataset: { action, filter: f }, text: label });
+    }));
+  }
+
+  function renderQuestionNavigator() {
+    const s = state.session;
+    const search = normalizeText(state.ui.quizSearch.trim());
+    const width = String(s.questionIds.length).length;
+    const nav = $('#navigator');
+    const items = [];
+    s.questionIds.forEach((id, i) => {
+      if (!matchesFilter(s, id, state.ui.quizFilter, search)) return;
+      const a = s.answers[id];
+      const cls = ['nav-item'];
+      const parts = [`Câu ${i + 1}`];
+      if (isRevealed(id)) {
+        cls.push(a === qOf(id).correctAnswer ? 's-correct' : 's-wrong');
+        parts.push(a === qOf(id).correctAnswer ? 'đúng' : 'sai');
+      } else if (a) { parts.push('đã trả lời'); } else { parts.push('chưa trả lời'); }
+      if (a) cls.push('s-answered');
+      if (s.marked[id]) { cls.push('s-marked'); parts.push('đã đánh dấu'); }
+      if (i === s.current) { cls.push('s-current'); parts.push('đang xem'); }
+      items.push(el('button', {
+        type: 'button', class: cls.join(' '), text: String(i + 1).padStart(Math.max(2, width), '0'),
+        'aria-label': parts.join(', '), 'aria-current': i === s.current ? 'true' : null, dataset: { index: String(i) },
+      }));
+    });
+    nav.replaceChildren(...items);
+    $('#navigator-empty').hidden = items.length > 0;
+  }
+
+  /* ---- Result ---- */
+  function renderDonut(r) {
+    const svg = $('#donut');
+    svg.replaceChildren();
+    const R = 15.9155; // chu vi = 100
+    const mk = (cls, len, offset) => {
+      const c = document.createElementNS(SVG_NS, 'circle');
+      c.setAttribute('class', cls);
+      c.setAttribute('cx', '21'); c.setAttribute('cy', '21'); c.setAttribute('r', String(R));
+      if (len != null) {
+        c.setAttribute('stroke-dasharray', `${len} ${100 - len}`);
+        c.setAttribute('stroke-dashoffset', String(-offset));
+      }
+      return c;
+    };
+    svg.append(mk('track'));
+    if (r.total > 0) {
+      const pc = (r.correct / r.total) * 100, pw = (r.wrong / r.total) * 100, ps = (r.skipped / r.total) * 100;
+      if (pc > 0) svg.append(mk('seg-correct', pc, 0));
+      if (pw > 0) svg.append(mk('seg-wrong', pw, pc));
+      if (ps > 0) svg.append(mk('seg-skipped', ps, pc + pw));
+    }
+    svg.setAttribute('aria-label', `Đúng ${r.correct}, sai ${r.wrong}, bỏ qua ${r.skipped} trên tổng ${r.total} câu`);
+  }
+
+  function renderResult() {
+    const s = state.session;
+    const r = calculateResult(s);
+    const g = gradeOf(r.percent);
+    $('#result-mode').textContent = `${s.mode === 'exam' ? 'Thi thử' : 'Luyện tập'}${s.parentId ? ' · Luyện lại câu sai' : ''}`;
+    $('#result-percent').textContent = formatPercent(r.percent);
+    const gradeEl = $('#result-grade');
+    gradeEl.textContent = g.label;
+    gradeEl.className = `grade ${g.cls}`;
+    $('#result-score').textContent = `Bạn trả lời đúng ${r.correct} trên ${r.total} câu.`;
+    $('#r-correct').textContent = String(r.correct);
+    $('#r-wrong').textContent = String(r.wrong);
+    $('#r-skipped').textContent = String(r.skipped);
+    $('#r-total').textContent = String(r.total);
+    $('#r-points').textContent = `${r.score}/${r.total}`;
+    $('#r-time').textContent = formatDuration(r.usedMs);
+    renderDonut(r);
+
+    $('#retry-include-skipped').checked = state.ui.includeSkipped;
+    setRetryNote('');
+    setContent($('[data-action="open-review"]'), 'Xem lại bài làm', 'eye');
+    setContent($('#retry-wrong-btn'), 'Luyện tập câu sai', 'rotate');
+    setContent($('#view-result [data-action="restart"]'), 'Làm lại toàn bộ', 'rotate');
+    setContent($('#view-result [data-action="home"]'), 'Quay về trang chủ', 'home');
+  }
+  function setRetryNote(msg) { $('#retry-note').textContent = msg; }
+
+  /* ---- Review ---- */
+  function reviewStatus(s, id) {
+    const a = s.answers[id];
+    if (!a) return 'skipped';
+    return a === qOf(id).correctAnswer ? 'correct' : 'wrong';
+  }
+
+  function renderReview() {
+    const s = state.session;
+    const search = normalizeText(state.ui.reviewSearch.trim());
+    const counts = { all: s.questionIds.length, correct: 0, wrong: 0, unanswered: 0, marked: 0 };
+    s.questionIds.forEach((id) => {
+      const st = reviewStatus(s, id);
+      if (st === 'correct') counts.correct++; else if (st === 'wrong') counts.wrong++; else counts.unanswered++;
+      if (s.marked[id]) counts.marked++;
+    });
+    renderChips($('#review-filters'), ['all', 'correct', 'wrong', 'unanswered', 'marked'], state.ui.reviewFilter, 'review-filter', counts);
+    setContent($('[data-action="back-result"]'), 'Về trang kết quả', 'left');
+
+    const items = [];
+    s.questionIds.forEach((id, i) => {
+      if (!matchesFilter(s, id, state.ui.reviewFilter, search)) return;
+      items.push(buildReviewItem(s, id, i));
+    });
+    $('#review-list').replaceChildren(...items);
+    $('#review-empty').hidden = items.length > 0;
+  }
+
+  function buildReviewItem(s, id, index) {
+    const q = qOf(id);
+    const status = reviewStatus(s, id);
+    const answer = s.answers[id];
+    const tagMap = {
+      correct: ['t-correct', 'Trả lời đúng', 'check'],
+      wrong: ['t-wrong', 'Trả lời sai', 'x'],
+      skipped: ['t-skipped', 'Chưa trả lời', 'alert'],
+    };
+    const [tcls, tlabel, ticon] = tagMap[status];
+    const tag = el('span', { class: `status-tag ${tcls}` }, [icon(ticon), document.createTextNode(tlabel)]);
+    const head = el('div', { class: 'q-head' }, [
+      el('span', { class: 'q-index', text: `Câu ${index + 1}` }),
+      el('div', { class: 'row' }, [
+        s.marked[id] ? el('span', { class: 'status-tag t-skipped' }, [icon('bookmark'), document.createTextNode('Đã đánh dấu')]) : null,
+        tag,
+      ]),
+    ]);
+
+    const options = s.optionOrder[id].map((oid, i) => {
+      const opt = q.options.find((o) => o.id === oid);
+      const cls = ['option'];
+      const tags = [];
+      let markIcon = null;
+      if (oid === q.correctAnswer) { cls.push('is-correct'); markIcon = 'check'; tags.push(el('span', { class: 'tag', text: 'Đáp án đúng' })); }
+      if (oid === answer) {
+        if (oid !== q.correctAnswer) { cls.push('is-wrong'); markIcon = 'x'; }
+        tags.push(el('span', { class: 'tag picked', text: 'Bạn đã chọn' }));
+      }
+      return el('div', { class: cls.join(' ') }, [
+        el('span', { class: 'key', text: LABELS[i] || String(i + 1), 'aria-hidden': 'true' }),
+        el('span', { class: 'label', text: opt.text }),
+        ...tags,
+        el('span', { class: 'mark' }, markIcon ? [icon(markIcon)] : []),
+      ]);
+    });
+
+    return el('article', { class: 'card review-item' }, [
+      head,
+      el('h2', { class: 'q-text', text: q.content }),
+      el('div', { class: 'options' }, options),
+    ]);
+  }
+
+  /* =========================================================
+   * 9. UI: modal, toast, theme, drawer
+   * ======================================================= */
+  function confirmDialog({ title, message, confirmText = 'Đồng ý', cancelText = 'Hủy' }) {
+    const dlg = $('#modal');
+    if (state.modalResolve) closeModal(false);
+    $('#modal-title').textContent = title;
+    $('#modal-message').textContent = message;
+    $('#modal-ok').textContent = confirmText;
+    $('#modal-cancel').textContent = cancelText;
+    return new Promise((resolve) => {
+      state.modalResolve = resolve;
+      if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+      $('#modal-ok').focus();
+    });
+  }
+
+  function closeModal(result) {
+    const dlg = $('#modal');
+    const resolve = state.modalResolve;
+    state.modalResolve = null;
+    if (dlg.open) dlg.close();
+    if (resolve) resolve(result);
+  }
+
+  function toast(message, type = 'info') {
+    const region = $('#toast-region');
+    const node = el('div', { class: `toast ${type}`, text: message });
+    region.append(node);
+    while (region.children.length > 3) region.firstChild.remove();
+    setTimeout(() => node.remove(), 3200);
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    const btn = $('#theme-toggle');
+    btn.replaceChildren(icon(theme === 'dark' ? 'sun' : 'moon'));
+    btn.setAttribute('aria-label', theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối');
+  }
+  function initTheme() {
+    const saved = storage.readRaw(KEYS.theme);
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved === 'dark' || saved === 'light' ? saved : (prefersDark ? 'dark' : 'light'));
+  }
+  function toggleTheme() {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    storage.writeRaw(KEYS.theme, next);
+  }
+
+  function openDrawer() {
+    state.ui.drawerOpen = true;
+    $('#sidebar').classList.add('open');
+    $('#backdrop').hidden = false;
+    $('#drawer-btn').setAttribute('aria-expanded', 'true');
+    document.body.classList.add('no-scroll');
+  }
+  function closeDrawer() {
+    if (!state.ui.drawerOpen) return;
+    state.ui.drawerOpen = false;
+    $('#sidebar').classList.remove('open');
+    $('#backdrop').hidden = true;
+    $('#drawer-btn').setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('no-scroll');
+  }
+
+  /* =========================================================
+   * 10. Khởi tạo & sự kiện
+   * ======================================================= */
+  async function initializeQuiz() {
+    setView('loading');
+    try {
+      const raw = await loadQuestions();
+      const { valid, errors } = validateQuestions(raw);
+      state.bank = valid;
+      state.bankMap = new Map(valid.map((q) => [q.id, q]));
+      state.bankIndex = new Map(valid.map((q, i) => [q.id, i]));
+      state.warnings = errors;
+    } catch (err) {
+      showError(err);
+      return;
+    }
+    loadPrefs();
+    const restored = restoreProgress();
+    setView(restored === 'expired' ? 'result' : 'welcome'); // bài thi hết hạn khi vắng mặt → hiện kết quả
+  }
+
+  function showError(err) {
+    $('#error-message').textContent = err && err.message ? err.message : 'Đã xảy ra lỗi không xác định.';
+    const details = $('#error-details');
+    const list = (err && err.details) || [];
+    details.replaceChildren(...list.map((d) => el('li', { text: d })));
+    details.hidden = list.length === 0;
+    setView('error');
+  }
+
+  async function handleStart() {
+    const p = state.prefs;
+    let minutes = p.minutes;
+    if (p.mode === 'exam') {
+      const raw = Number($('#exam-minutes').value);
+      const err = $('#exam-minutes-error');
+      if (!Number.isInteger(raw) || raw < 1 || raw > 300) {
+        err.textContent = 'Vui lòng nhập số phút nguyên từ 1 đến 300.';
+        err.hidden = false;
+        $('#exam-minutes').focus();
+        return;
+      }
+      err.hidden = true;
+      minutes = raw;
+      p.minutes = raw;
+    }
+    if (state.session && state.session.status === 'in_progress') {
+      const ok = await confirmDialog({
+        title: 'Bắt đầu bài mới?',
+        message: 'Bài đang làm dở sẽ bị hủy và không thể khôi phục.',
+        confirmText: 'Bắt đầu bài mới', cancelText: 'Giữ bài cũ',
+      });
+      if (!ok) return;
+    }
+    savePrefs();
+    const ids = pickQuestionIds(state.bank.map((q) => q.id), p.count, p.shuffleQ);
+    startQuiz({ mode: p.mode, ids, shuffleO: p.shuffleO, shuffleQ: p.shuffleQ, minutes });
+  }
+
+  async function goHome() {
+    if (state.view === 'quiz' && state.session && state.session.status === 'in_progress') {
+      const ok = await confirmDialog({
+        title: 'Về trang chủ?', message: 'Bài làm được lưu tự động, bạn có thể tiếp tục sau.',
+        confirmText: 'Về trang chủ', cancelText: 'Ở lại',
+      });
+      if (!ok) return;
+    }
+    setView('welcome');
+  }
+
+  function onClick(e) {
+    const target = e.target.closest('[data-action], .option, .nav-item');
+    if (!target) return;
+
+    if (target.classList.contains('option') && target.closest('#options')) {
+      selectAnswer(target.dataset.optionId);
+      return;
+    }
+    if (target.classList.contains('nav-item')) {
+      goToQuestion(Number(target.dataset.index));
+      if (window.matchMedia('(max-width: 960px)').matches) closeDrawer();
+      return;
+    }
+    const s = state.session;
+    switch (target.dataset.action) {
+      case 'toggle-theme': toggleTheme(); break;
+      case 'home': goHome(); break;
+      case 'reload-data': initializeQuiz(); break;
+      case 'resume':
+        if (s) setView('quiz');
+        break;
+      case 'view-result': if (s) setView('result'); break;
+      case 'prev': if (s) goToQuestion(s.current - 1); break;
+      case 'next': if (s) goToQuestion(s.current + 1); break;
+      case 'check': checkAnswer(); break;
+      case 'bookmark': toggleBookmark(); break;
+      case 'submit': submitQuiz(); break;
+      case 'toggle-drawer': state.ui.drawerOpen ? closeDrawer() : openDrawer(); break;
+      case 'close-drawer': closeDrawer(); break;
+      case 'quiz-filter':
+        state.ui.quizFilter = target.dataset.filter;
+        renderSidebar(); renderQuestionNavigator();
+        break;
+      case 'review-filter':
+        state.ui.reviewFilter = target.dataset.filter;
+        renderReview();
+        break;
+      case 'open-review': if (s) { setView('review'); } break;
+      case 'back-result': setView('result'); break;
+      case 'retry-wrong': retryWrongQuestions(); break;
+      case 'restart': restartSameSet(); break;
+      default: break;
+    }
+  }
+
+  function onKeydown(e) {
+    if (e.key === 'Escape' && state.ui.drawerOpen) { closeDrawer(); return; }
+    if (state.view !== 'quiz' || !state.session || state.session.status !== 'in_progress') return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target;
+    if (t && (t.closest('input, textarea, select, [contenteditable="true"]') || t.closest('dialog[open]'))) return;
+    if ($('#modal').open) return;
+
+    const s = state.session;
+    if (/^[1-9]$/.test(e.key)) {
+      const order = s.optionOrder[currentId()];
+      const optionId = order[Number(e.key) - 1];
+      if (optionId) { e.preventDefault(); selectAnswer(optionId); }
+    } else if (e.key === 'ArrowLeft') {
+      if (s.current > 0) { e.preventDefault(); goToQuestion(s.current - 1, { focus: true }); }
+    } else if (e.key === 'ArrowRight') {
+      if (s.current < s.questionIds.length - 1) { e.preventDefault(); goToQuestion(s.current + 1, { focus: true }); }
+    }
+  }
+
+  function bindEvents() {
+    document.addEventListener('click', onClick);
+    document.addEventListener('keydown', onKeydown);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+
+    $('#setup-form').addEventListener('submit', (e) => { e.preventDefault(); handleStart(); });
+    $('#setup-form').addEventListener('change', (e) => {
+      const t = e.target;
+      const p = state.prefs;
+      if (t.name === 'mode') {
+        p.mode = t.value;
+        $('#exam-time-field').hidden = p.mode !== 'exam';
+      } else if (t.name === 'count') {
+        p.count = t.value === 'all' ? 'all' : Number(t.value);
+        updateCountHint();
+      } else if (t.id === 'opt-shuffle-q') p.shuffleQ = t.checked;
+      else if (t.id === 'opt-shuffle-o') p.shuffleO = t.checked;
+      else if (t.id === 'exam-minutes') {
+        const v = Number(t.value);
+        if (Number.isInteger(v) && v >= 1 && v <= 300) { p.minutes = v; $('#exam-minutes-error').hidden = true; }
+      }
+    });
+
+    $('#quiz-search').addEventListener('input', (e) => { state.ui.quizSearch = e.target.value; renderQuestionNavigator(); });
+    $('#review-search').addEventListener('input', (e) => { state.ui.reviewSearch = e.target.value; renderReview(); });
+    $('#retry-include-skipped').addEventListener('change', (e) => { state.ui.includeSkipped = e.target.checked; setRetryNote(''); });
+
+    const dlg = $('#modal');
+    $('form', dlg).addEventListener('submit', (e) => {
+      const ok = !!e.submitter && e.submitter.value === 'ok';
+      const r = state.modalResolve;
+      state.modalResolve = null;
+      if (r) r(ok);
+    });
+    dlg.addEventListener('close', () => {
+      if (state.modalResolve) { const r = state.modalResolve; state.modalResolve = null; r(dlg.returnValue === 'ok'); }
+    });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close('cancel'); });
+  }
+
+  /* =========================================================
+   * 11. Bootstrap
+   * ======================================================= */
+  function boot() {
+    hydrateIcons();
+    initTheme();
+    bindEvents();
+    initializeQuiz();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+
+</script>
+</body>
+</html>
